@@ -18,20 +18,20 @@ In our graph, we propagate the "upstream" gradient from the output back to the i
 ## 3. Mathematical Analysis
 
 ### Function 1: $f(x, y, z) = (x \cdot y) + z$
-Given inputs: $x=2, y=3, z=4$.
+Given inputs: $x=2, y=3, z=4$. Let $p = x \cdot y$.
 
 | Node | Forward Value (val) | Gradient (grad) |
 | :--- | :--- | :--- |
 | **x** | 2 | 3 |
 | **y** | 3 | 2 |
 | **z** | 4 | 1 |
-| **(x * y)** | 6 | 1 |
+| **p** | 6 | 1 |
 | **f** | 10 | 1 |
 
-*   **Gradient Formula:** $\frac{\partial f}{\partial x} = \frac{\partial f}{\partial (*)} \cdot \frac{\partial (*)}{\partial x} = 1 \cdot y = 3$
+*   **Gradient Formula:** $\frac{\partial f}{\partial x} = \frac{\partial f}{\partial p} \cdot \frac{\partial p}{\partial x} = 1 \cdot y = 1 \cdot 3 = 3$
 
 ### Function 2: $f(x, y, z, t) = ((x \cdot y) + z) \cdot t$
-Given inputs: $x=2, y=3, z=4, t=5$.
+Given inputs: $x=2, y=3, z=4, t=5$. Let $p = x \cdot y$ and $q = p + z$.
 
 | Node | Forward Value (val) | Gradient (grad) |
 | :--- | :--- | :--- |
@@ -39,11 +39,11 @@ Given inputs: $x=2, y=3, z=4, t=5$.
 | **y** | 3 | 10 |
 | **z** | 4 | 5 |
 | **t** | 5 | 10 |
-| **(x * y)** | 6 | 5 |
-| **((x * y) + z)** | 10 | 5 |
+| **p** | 6 | 5 |
+| **q** | 10 | 5 |
 | **f** | 50 | 1 |
 
-*   **Gradient Formula:** $\frac{\partial f}{\partial x} = \frac{\partial f}{\partial (*_2)} \cdot \frac{\partial (*_2)}{\partial (+)} \cdot \frac{\partial (+)}{\partial (*_1)} \cdot \frac{\partial (*_1)}{\partial x} = 1 \cdot 5 \cdot 1 \cdot 3 = 15$
+*   **Gradient Formula:** $\frac{\partial f}{\partial x} = \frac{\partial f}{\partial q} \cdot \frac{\partial q}{\partial p} \cdot \frac{\partial p}{\partial x} = t \cdot 1 \cdot y = 5 \cdot 1 \cdot 3 = 15$
 
 ---
 

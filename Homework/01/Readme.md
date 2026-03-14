@@ -1,34 +1,74 @@
-# Traveling Salesperson Problem (TSP) - Hill Climbing
+# Traveling Salesperson Problem (TSP) - Hill Climbing Solver
 
-This project implements the Hill Climbing optimization algorithm to solve the Traveling Salesperson Problem (TSP). The goal is to find the shortest possible route that visits a set of cities and returns to the starting point.
+This project implements a **Hill Climbing algorithm** to solve the Traveling Salesperson Problem. The objective is to find the shortest possible route (a Hamiltonian cycle) that visits a set of given cities exactly once.
 
-## Implementation Details
+## Project Overview
 
-| Component | Explanation |
+| Component | Description |
 | :--- | :--- |
-| **State** | Represents the sequence of cities visited (a permutation of indices). |
-| **Neighbor** | Uses the **2-opt strategy**: two edges are selected and swapped to uncross paths, effectively reversing a segment of the route. |
-| **Height** | Calculated as `-1 * total_distance`. Since Hill Climbing aims to *maximize* a value, we negate the distance to turn the minimization problem into a maximization problem. |
-| **Deterministic** | `random.seed(0)` is used to ensure the algorithm produces the exact same result every time it is executed, aiding in debugging and testing. |
-| **Hill Climbing** | A local search algorithm that iteratively modifies the current solution by generating a neighbor and accepting it if it improves the "height" (distance). |
+| **Algorithm** | Hill Climbing (Local Search) |
+| **Optimization Goal** | Minimize total distance (by maximizing negative distance) |
+| **Neighbor Strategy** | 2-opt Swap (reversing a segment of the path to uncross lines) |
+| **Reproducibility** | Deterministic (using `random.seed(0)`) |
+| **State** | A permutation of city indices `[0, 1, 2, ..., n]` |
+
+## Core Logic Implementation
+
+The solution relies on the following core methods:
+
+### 1. Height Function
+Since Hill Climbing naturally seeks to reach the highest point, we define "height" as the negative value of the total distance.
+```python
+def height(self) -> float:
+    # Maximizing negative distance is equivalent to minimizing distance.
+    return -self.total_distance()
+```
+### 2. Neighbor Function (2-opt)
+```python
+def neighbor(self) -> 'TSPSolution':
+    neighbor_sol = TSPSolution(self.cities)
+    neighbor_sol.path = self.path[:]
+    # Select two random indices and reverse the segment between them
+    i, j = sorted(random.sample(range(len(self.path)), 2))
+    neighbor_sol.path[i:j+1] = reversed(neighbor_sol.path[i:j+1])
+    return neighbor_sol
+```
+### 3. Hill Climbing Execution
+```python
+def hill_climbing(initial_solution: TSPSolution):
+    current = initial_solution
+    while True:
+        neighbor = current.neighbor()
+        # Move to neighbor only if the distance is shorter (height is higher)
+        if neighbor.height() > current.height():
+            current = neighbor
+        else:
+            break # Local optimum reached
+    return current
+```
 
 ## How to Run
-1. Ensure you have Python installed.
-2. Open your terminal in the project directory.
-3. Activate your virtual environment (if applicable):
-   ```bash
-   .\.venv\Scripts\Activate.ps1
+1. Ensure Python 3.x is installed.
+2. Open your project folder in the terminal.
+3. Activate the virtual environment:
+```bash
+.\.venv\Scripts\Activate.ps1
+```
+4. Run the main script:
+```bash
+python HillClimbing.py
+```
+
+## AI Conversation Record
+1. Problem Definition: Implemented TSP using Hill Climbing with strict constraints on neighbor and height methods.
+2. Logic Refinement: Utilized 2-opt for path optimization and negative distance for the height function.
+3. Deterministic Results: Applied random.seed(0) to ensure identical outputs during testing and debugging.
+4. Professional Standards: Added type hinting and docstrings for better code clarity and maintainability.
 
 ---
 
-### Important Reminder for `HillClimbing.py`
-To ensure the `README` documentation matches your code behavior, make sure your `HillClimbing.py` starts exactly like this:
-
-```python
-import math
-import random
-
-# Setting the seed ensures the result is the same every time you run it
-random.seed(0) 
-
-# ... the rest of your code ...
+### Instructions for you:
+1. **Create/Open** the `README.md` file in your VS Code.
+2. **Delete everything** currently in that file.
+3. **Paste** the code block above into the file.
+4. **Save** the file. 

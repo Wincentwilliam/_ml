@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LUXE | Modern Shopping Experience</title>
+    <style>
+        :root {
+            --primary: #2d3436;
+            --accent: #6c5ce7;
+            --accent-hover: #a29bfe;
+            --bg: #f9f9f9;
+            --white: #ffffff;
+            --text: #2d3436;
+            --shadow: 0 10px 30px rgba(0,0,0,0.1);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        nav {
+            background: var(--white);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: var(--primary);
+            cursor: pointer;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links li a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .nav-links li a:hover {
+            color: var(--accent);
+        }
+
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        #cart-count {
+            position: absolute;
+            top: -8px;
+            right: -12px;
+            background: var(--accent);
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 50%;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 60vh;
+            background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            padding: 0 20px;
+        }
+
+        .hero-content h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease;
+        }
+
+        /* Categories */
+        .categories {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            padding: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .cat-btn {
+            padding: 10px 25px;
+            border: none;
+            background: var(--white);
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .cat-btn.active, .cat-btn:hover {
+            background: var(--accent);
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        /* Product Grid */
+        .products-container {
+            padding: 2rem 5%;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .product-card {
+            background: var(--white);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .product-img {
+            width: 100%;
+            height: 250px;
+            background-color: #eee;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .product-info {
+            padding: 1.5rem;
+        }
+
+        .product-info h3 {
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .product-price {
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .add-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .add-btn:hover {
+            background: var(--accent);
+        }
+
+        /* Cart Sidebar */
+        .cart-sidebar {
+            position: fixed;
+            right: -400px;
+            top: 0;
+            width: 350px;
+            height: 100%;
+            background: var(--white);
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+            transition: 0.4s ease;
+            z-index: 2000;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cart-sidebar.open {
+            right: 0;
+        }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 1rem;
+        }
+
+        .close-cart {
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+
+        .cart-items {
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 10px;
+            background: #fcfcfc;
+            border-radius: 8px;
+        }
+
+        .cart-total {
+            margin-top: 2rem;
+            font-size: 1.3rem;
+            font-weight: 700;
+            text-align: right;
+            padding-bottom: 1rem;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            padding: 15px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+
+        /* Payment Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .payment-form input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        /* Chatbot */
+        .chatbot-toggle {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(108, 92, 231, 0.4);
+            z-index: 1000;
+            font-size: 1.5rem;
+        }
+
+        .chatbot-window {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 320px;
+            height: 450px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: var(--accent);
+            color: white;
+            padding: 1rem;
+            font-weight: 600;
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .message {
+            padding: 8px 12px;
+            border-radius: 15px;
+            max-width: 80%;
+            font-size: 0.9rem;
+        }
+
+        .bot-msg {
+            background: #f0f0f0;
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+        }
+
+        .user-msg {
+            background: var(--accent);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 1rem;
+            border-top: 1px solid #eee;
+        }
+
+        .chat-input input {
+            flex-grow: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        .chat-input button {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 0 15px;
+            margin-left: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .hero-content h1 { font-size: 2.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">LUXE.</div>
+        <ul class="nav-links">
+            <li><a onclick="filterProducts('all')">Home</a></li>
+            <li><a onclick="filterProducts('shoes')">Shoes</a></li>
+            <li><a onclick="filterProducts('clothes')">Clothes</a></li>
+            <li><a onclick="filterProducts('pants')">Pants</a></li>
+            <li><a onclick="filterProducts('accessories')">Accessories</a></li>
+        </ul>
+        <div class="cart-icon" onclick="toggleCart()">
+            🛒 <span id="cart-count">0</span>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Elevate Your Style</h1>
+            <p>Discover the latest trends in premium fashion and accessories.</p>
+        </div>
+    </section>
+
+    <div class="categories">
+        <button class="cat-btn active" onclick="filterProducts('all', this)">All</button>
+        <button class="cat-btn" onclick="filterProducts('shoes', this)">Shoes</button>
+        <button class="cat-btn" onclick="filterProducts('clothes', this)">Clothes</button>
+        <button class="cat-btn" onclick="filterProducts('pants', this)">Pants</button>
+        <button class="cat-btn" onclick="filterProducts('accessories', this)">Accessories</button>
+    </div>
+
+    <div class="products-container" id="product-grid">
+        <!-- Products injected by JS -->
+    </div>
+
+    <div class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header">
+            <h2>Your Cart</h2>
+            <span class="close-cart" onclick="toggleCart()">✕</span>
+        </div>
+        <div class="cart-items" id="cart-items">
+            <!-- Cart items injected by JS -->
+        </div>
+        <div class="cart-total" id="cart-total">Total: $0.00</div>
+        <button class="checkout-btn" onclick="openPayment()">Checkout Now</button>
+    </div>
+
+    <div class="modal" id="payment-modal">
+        <div class="modal-content">
+            <h2>Secure Payment</h2>
+            <p style="margin-bottom: 1rem; color: #666;">Enter your details to complete purchase</p>
+            <div class="payment-form">
+                <input type="text" placeholder="Cardholder Name">
+                <input type="text" placeholder="Card Number (XXXX XXXX XXXX XXXX)">
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" placeholder="MM/YY">
+                    <input type="text" placeholder="CVV">
+                </div>
+                <button class="checkout-btn" style="margin-top: 20px;" onclick="processPayment()">Pay Now</button>
+                <button class="add-btn" style="margin-top: 10px; background: #ccc;" onclick="closePayment()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="chatbot-toggle" onclick="toggleChat()">💬</div>
+    <div class="chatbot-window" id="chat-window">
+        <div class="chat-header">LUXE AI Assistant</div>
+        <div class="chat-messages" id="chat-messages">
+            <div class="message bot-msg">Hello! I'm your LUXE assistant. How can I help you today?</div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="chat-input" placeholder="Ask me something...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        const products = [
+            { id: 1, name: "Air Max Luxe", price: 120, category: "shoes", img: "https://images.unsplash.com/photo-1542291060-3aa6917b8367?w=400" },
+            { id: 2, name: "Silk Evening Dress", price: 250, category: "clothes", img: "https://images.unsplash.com/photo-1539008835685-558f57b59f5f?w=400" },
+            { id: 3, name: "Slim Fit Chinos", price: 80, category: "pants", img: "https://images.unsplash.com/photo-1624378439575-77ee80078e20?w=400" },
+            { id: 4, name: "Gold Chain Watch", price: 300, category: "accessories", img: "https://images.unsplash.com/photo-1524590023275-65f77f33777a?w=400" },
+            { id: 5, name: "Urban Sneakers", price: 95, category: "shoes", img: "https://images.unsplash.com/photo-1595950653106-6c75434da732?w=400" },
+            { id: 6, name: "Cashmere Sweater", price: 180, category: "clothes", img: "https://images.unsplash.com/photo-1574205941-131017736731?w=400" },
+            { id: 7, name: "Denim Flare", price: 70, category: "pants", img: "https://images.unsplash.com/photo-1541099649105-f697a99f27ae?w=400" },
+            { id: 8, name: "Leather Wallet", price: 45, category: "accessories", img: "https://images.unsplash.com/photo-1627120773473-7f7e8f75739d?w=400" },
+        ];
+
+        let cart = [];
+
+        function initProducts() {
+            const grid = document.getElementById('product-grid');
+            grid.innerHTML = products.map(p => `
+                <div class="product-card" data-category="${p.category}">
+                    <img src="${p.img}" class="product-img" alt="${p.name}">
+                    <div class="product-info">
+                        <h3>${p.name}</h3>
+                        <span class="product-price">$${p.price}</span>
+                        <button class="add-btn" onclick="addToCart(${p.id})">Add to Cart</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterProducts(cat, btn) {
+            const cards = document.querySelectorAll('.product-card');
+            
+            // Update active button
+            if(btn) {
+                document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            }
+
+            cards.forEach(card => {
+                if(cat === 'all' || card.dataset.category === cat) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function addToCart(id) {
+            const product = products.find(p => p.id === id);
+            cart.push(product);
+            updateCart();
+            
+            // Simple animation feedback
+            const btn = event.target;
+            btn.innerText = "Added!";
+            btn.style.background = "#2ecc71";
+            setTimeout(() => {
+                btn.innerText = "Add to Cart";
+                btn.style.background = "var(--primary)";
+            }, 1000);
+        }
+
+        function updateCart() {
+            document.getElementById('cart-count').innerText = cart.length;
+            const cartItems = document.getElementById('cart-items');
+            const totalEl = document.getElementById('cart-total');
+            
+            cartItems.innerHTML = cart.map((item, index) => `
+                <div class="cart-item">
+                    <span>${item.name}</span>
+                    <span>$${item.price} <button onclick="removeFromCart(${index})" style="margin-left:10px; cursor:pointer; border:none; background:none; color:red;">✕</button></span>
+                </div>
+            `).join('');
+
+            const total = cart.reduce((sum, item) => sum + item.price, 0);
+            totalEl.innerText = `Total: $${total.toFixed(2)}`;
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCart();
+        }
+
+        function toggleCart() {
+            document.getElementById('cart-sidebar').classList.toggle('open');
+        }
+
+        function openPayment() {
+            if(cart.length === 0) return alert("Your cart is empty!");
+            document.getElementById('payment-modal').style.display = 'flex';
+        }
+
+        function closePayment() {
+            document.getElementById('payment-modal').style.display = 'none';
+        }
+
+        function processPayment() {
+            alert("Payment Successful! Thank you for shopping with LUXE.");
+            cart = [];
+            updateCart();
+            closePayment();
+            toggleCart();
+        }
+
+        // Chatbot Logic
+        function toggleChat() {
+            const win = document.getElementById('chat-window');
+            win.style.display = win.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+            if(!text) return;
+
+            appendMessage(text, 'user-msg');
+            input.value = '';
+
+            setTimeout(() => {
+                const response = getBotResponse(text.toLowerCase());
+                appendMessage(response, 'bot-msg');
+            }, 600);
+        }
+
+        function appendMessage(text, className) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `message ${className}`;
+            msgDiv.innerText = text;
+            document.getElementById('chat-messages').appendChild(msgDiv);
+            document.getElementById('chat-messages').scrollTop = document.getElementById('chat-messages').scrollHeight;
+        }
+
+        function getBotResponse(input) {
+            if(input.includes('hello') || input.includes('hi')) return "Hello! Welcome to LUXE. How can I help you find the perfect outfit?";
+            if(input.includes('shoes')) return "We have a great collection of sneakers and formal shoes. Check out our Shoes category!";
+            if(input.includes('shipping')) return "We offer free worldwide shipping on orders over $200!";
+            if(input.includes('discount')) return "Use code LUXE20 for 20% off your first order!";
+            if(input.includes('payment')) return "We accept all major credit cards and PayPal.";
+            return "I'm not sure I understand. Could you try rephrasing? Or ask about our shoes, shipping, or discounts!";
+        }
+
+        // Handle Enter key for chat
+        document.getElementById('chat-input').addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') sendMessage();
+        });
+
+        // Initialize
+        initProducts();
+    </script>
+</body>
+</html>

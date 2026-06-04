@@ -1,0 +1,18 @@
+{
+  "task": "create a C++ program that implements bubble sort on an array of 10 random numbers and shows the array before and after sorting",
+  "language": "C++",
+  "model": "gemma4:31b-cloud",
+  "started_at": "2026-06-01T03:36:44.245287",
+  "final_phase": "SUCCEEDED",
+  "total_attempts": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "filename": "bubble_sort_random",
+      "thought": "",
+      "success": true,
+      "error_type": "UnknownError",
+      "duration_ms": 2927.9463999555446
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "filepath": "C:\\Users\\Wincent\\Wincent VS Code\\_ml\\Homework\\Midterm Project\\AuraCode-Agent\\generated_code\\generated_script.py",
+  "returncode": -1,
+  "success": false,
+  "duration_ms": 30060.41,
+  "stdout": "",
+  "stderr": "[TimeoutExpired] Script exceeded 30s limit."
+}

@@ -1,0 +1,18 @@
+{
+  "task": "create a Java program that implements bubble sort and shows array before and after",
+  "language": "Java",
+  "model": "gemma4:31b-cloud",
+  "started_at": "2026-06-01T12:05:24.601411",
+  "final_phase": "SUCCEEDED",
+  "total_attempts": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "filename": "bubblesortdemo",
+      "thought": "",
+      "success": true,
+      "error_type": "UnknownError",
+      "duration_ms": 508.4134000353515
+    }
+  ]
+}

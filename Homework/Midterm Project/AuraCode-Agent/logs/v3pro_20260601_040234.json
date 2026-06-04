@@ -1,0 +1,18 @@
+{
+  "task": "create a script that generates a fibonacci sequence up to 20 terms and displays them with index in a formatted table",
+  "language": "JavaScript",
+  "model": "gemma4:31b-cloud",
+  "started_at": "2026-06-01T04:02:31.972412",
+  "final_phase": "SUCCEEDED",
+  "total_attempts": 1,
+  "attempts": [
+    {
+      "attempt": 1,
+      "filename": "fibonacci_table",
+      "thought": "",
+      "success": true,
+      "error_type": "UnknownError",
+      "duration_ms": 70.30319998739287
+    }
+  ]
+}

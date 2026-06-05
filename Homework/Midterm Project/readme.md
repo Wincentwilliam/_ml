@@ -525,7 +525,7 @@ create a script that displays a solar system with planet names and distances fro
 ### V3 — Self-Healing (these will trigger the ReAct loop!)
 ```
 [Python]    create a script that fetches top 5 posts from Hacker News API and saves to CSV
-[HTML/Web]  buat website coffee shop dengan foto menu, fake payment, dan AI barista chatbot
+[HTML/Web]  Create a coffee shop website with menu photos, fake payments, and an AI barista chatbot.
 [Auto]      create a script that uses requests to fetch weather from wttr.in for Jakarta
 ```
 

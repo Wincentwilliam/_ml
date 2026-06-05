@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bean & Brew | Artisanal Coffee Experience</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">Bean<span>&</span>Brew</a>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#menu">Menu</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <div class="nav-burger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <img src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=1920&q=80" class="hero-bg" alt="Coffee Shop Background" onerror="this.src='https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&q=80'">
+        <div class="hero-overlay">
+            <div class="hero-content">
+                <h1>Wake Up Your <br>Senses</h1>
+                <p>Experience the finest artisanal brews crafted with passion and precision in every cup.</p>
+                <a href="#menu" class="btn-primary">Explore Menu</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Menu Section -->
+    <section id="menu" class="menu-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Our Signature Menu</h2>
+                <p>Hand-picked beans, roasted to perfection</p>
+            </div>
+            <div class="menu-grid">
+                <!-- Item 1 -->
+                <div class="menu-card">
+                    <img src="https://images.unsplash.com/photo-1541167760496-1628956ad338?w=600&q=80" alt="Cappuccino" onerror="this.src='https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&q=80'">
+                    <div class="card-body">
+                        <h3>Classic Cappuccino</h3>
+                        <p>Rich espresso topped with a thick layer of creamy foam.</p>
+                        <div class="card-footer">
+                            <span class="price">$4.50</span>
+                            <button class="btn-order" onclick="openPayment('Classic Cappuccino', 4.50)">Order Now</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Item 2 -->
+                <div class="menu-card">
+                    <img src="https://images.unsplash.com/photo-1572442339311-a9997377223d?w=600&q=80" alt="Caramel Macchiato" onerror="this.src='https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&q=80'">
+                    <div class="card-body">
+                        <h3>Caramel Macchiato</h3>
+                        <p>Sweet caramel drizzle layered with steamed milk and espresso.</p>
+                        <div class="card-footer">
+                            <span class="price">$5.25</span>
+                            <button class="btn-order" onclick="openPayment('Caramel Macchiato', 5.25)">Order Now</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Item 3 -->
+                <div class="menu-card">
+                    <img src="https://images.unsplash.com/photo-1461023058770-286fC2a7066c?w=600&q=80" alt="Cold Brew" onerror="this.src='https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&q=80'">
+                    <div class="card-body">
+                        <h3>Signature Cold Brew</h3>
+                        <p>Slow-steeped for 24 hours for a smooth, bold caffeine kick.</p>
+                        <div class="card-footer">
+                            <span class="price">$4.75</span>
+                            <button class="btn-order" onclick="openPayment('Signature Cold Brew', 4.75)">Order Now</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Item 4 -->
+                <div class="menu-card">
+                    <img src="https://images.unsplash.com/photo-1514432324607-a097926c259e?w=600&q=80" alt="Flat White" onerror="this.src='https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&q=80'">
+                    <div class="card-body">
+                        <h3>Velvet Flat White</h3>
+                        <p>Double shot of espresso with silky micro-foam milk.</p>
+                        <div class="card-footer">
+                            <span class="price">$4.25</span>
+                            <button class="btn-order" onclick="openPayment('Velvet Flat White', 4.25)">Order Now</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Item 5 -->
+                <div class="menu-card">
+                    <img src="https://images.unsplash.com/photo-1551024709-887e9796458a?w=600&q=80" alt="Mocha" onerror="this.src='https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&q=80'">
+                    <div class="card-body">
+                        <h3>Dark Chocolate Mocha</h3>
+                        <p>A perfect blend of premium cocoa and intense espresso.</p>
+                        <div class="card-footer">
+                            <span class="price">$5.00</span>
+                            <button class="btn-order" onclick="openPayment('Dark Chocolate Mocha', 5.00)">Order Now</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Item 6 -->
+                <div class="menu-card">
+                    <img src="https://images.unsplash.com/photo-1594136337279-7770f3739731?w=600&q=80" alt="Affogato" onerror="this.src='https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&q=80'">
+                    <div class="card-body">
+                        <h3>Espresso Affogato</h3>
+                        <p>Vanilla bean gelato drowned in a hot shot of espresso.</p>
+                        <div class="card-footer">
+                            <span class="price">$6.50</span>
+                            <button class="btn-order" onclick="openPayment('Espresso Affogato', 6.50)">Order Now</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about-section">
+        <div class="container about-grid">
+            <div class="about-img">
+                <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&q=80" alt="Our Shop" onerror="this.src='https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&q=80'">
+            </div>
+            <div class="about-text">
+                <h2>Our Story</h2>
+                <p>Founded in 2010, Bean & Brew started as a small cart in a quiet corner of the city. Our mission has always been simple: to source the highest quality organic beans from sustainable farms and roast them to bring out their unique character.</p>
+                <p>Every cup we serve is a testament to our commitment to quality, community, and the art of coffee making.</p>
+                <div class="stats">
+                    <div class="stat-item"><strong>12+</strong><span>Years Exp</span></div>
+                    <div class="stat-item"><strong>50k+</strong><span>Cups Served</span></div>
+                    <div class="stat-item"><strong>100%</strong><span>Organic</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Visit Us</h2>
+                <p>We'd love to brew you a cup</p>
+            </div>
+            <div class="contact-wrapper">
+                <div class="contact-info">
+                    <div class="info-box">
+                        <h3>Location</h3>
+                        <p>123 Coffee Lane, Brew City, BC 56789</p>
+                    </div>
+                    <div class="info-box">
+                        <h3>Hours</h3>
+                        <p>Mon - Fri: 07:00 AM - 09:00 PM<br>Sat - Sun: 08:00 AM - 10:00 PM</p>
+                    </div>
+                    <div class="info-box">
+                        <h3>Contact</h3>
+                        <p>hello@beanandbrew.com<br>+1 (234) 567-890</p>
+                    </div>
+                </div>
+                <form class="contact-form">
+                    <input type="text" placeholder="Your Name" required>
+                    <input type="email" placeholder="Your Email" required>
+                    <textarea placeholder="Your Message" rows="5" required></textarea>
+                    <button type="submit" class="btn-primary">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container footer-content">
+            <div class="footer-brand">
+                <a href="#" class="logo">Bean<span>&</span>Brew</a>
+                <p>Crafting moments, one cup at a time.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#menu">Menu</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-socials">
+                <h4>Follow Us</h4>
+                <div class="social-icons">
+                    <a href="#">FB</a>
+                    <a href="#">IG</a>
+                    <a href="#">TW</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2023 Bean & Brew Coffee Shop. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Payment Modal -->
+    <div id="paymentModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div id="paymentFormContainer">
+                <h2>Complete Your Order</h2>
+                <div class="order-summary">
+                    <p>Item: <span id="orderItem">Item Name</span></p>
+                    <p>Total: <span id="orderPrice">$0.00</span></p>
+                </div>
+                <form id="paymentForm">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" required placeholder="John Doe">
+                    </div>
+                    <div class="form-group">
+                        <label>Payment Method</label>
+                        <select required>
+                            <option value="credit">Credit Card</option>
+                            <option value="paypal">PayPal</option>
+                            <option value="gpay">Google Pay</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Card Number</label>
+                        <input type="text" placeholder="**** **** **** ****" required>
+                    </div>
+                    <button type="submit" class="btn-primary full-width">Pay Now</button>
+                </form>
+            </div>
+            <div id="modalSuccess" class="hidden">
+                <div class="success-icon">✓</div>
+                <h2>Payment Successful!</h2>
+                <p>Your coffee is being prepared. Please wait at the counter.</p>
+                <button class="btn-primary" onclick="closePayment()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Chat Widget -->
+    <div class="chat-widget">
+        <button id="chatToggle" class="chat-btn">
+            <img src="https://cdn-icons-png.flaticon.com/512/2593/2593635.png" alt="Chat Icon">
+        </button>
+        <div id="chatPanel" class="chat-panel hidden">
+            <div class="chat-header">
+                <h3>AI Barista</h3>
+                <button id="closeChat">&times;</button>
+            </div>
+            <div class="chat-body" id="chatBody">
+                <div class="msg bot">Hello! I'm your AI Barista. What can I recommend for you today? ☕</div>
+            </div>
+            <div class="chat-footer">
+                <input type="text" id="chatInput" placeholder="Ask about our coffee...">
+                <button id="sendChat">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

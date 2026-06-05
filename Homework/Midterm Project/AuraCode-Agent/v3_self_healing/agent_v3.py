@@ -672,106 +672,245 @@ CRITICAL RULES:
 - Start each file immediately after ##FILE: filename## with no intro
 """
 
-def generate_fullstack_project(state: AgentState, task: str) -> dict[str, str]:
+
+# ═══════════════════════════════════════════════════════════════════
+#  FULLSTACK PROJECT GENERATOR  — File-by-file for maximum quality
+# ═══════════════════════════════════════════════════════════════════
+
+# Each file gets its own focused prompt so the model is not overwhelmed
+FILE_PROMPTS = {
+    "index.html": lambda project_name, desc, task: f"""
+You are an expert HTML/CSS developer. Create a COMPLETE, BEAUTIFUL, PROFESSIONAL HTML file.
+
+Project: {project_name}
+Description: {desc}
+Business context: {task}
+
+REQUIREMENTS:
+1. DOCTYPE html, meta charset, viewport
+2. Google Fonts link (Playfair Display + Inter)
+3. <link rel="stylesheet" href="style.css"> — NO embedded CSS
+4. NAVIGATION: logo + nav links (smooth scroll to sections)
+5. HERO SECTION: full-screen with background image from Unsplash
+   Use: <img src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=1920&q=80" class="hero-bg">
+   Pick a RELEVANT Unsplash photo URL for this business type
+6. CONTENT SECTIONS: at least 4 sections (hero, products/services, about, contact)
+7. PRODUCTS/MENU: grid of 6+ cards, each with:
+   - Real Unsplash image with onerror fallback
+   - Name, description, price
+   - <button class="btn-order" onclick="openPayment('Item Name', price)">Order Now</button>
+8. PAYMENT MODAL: id="paymentModal" with form fields and id="modalSuccess"
+9. AI CHAT WIDGET: floating button + panel id="chatPanel" with input and send button
+10. FOOTER: links, social icons, copyright
+11. <script src="script.js"> at bottom — NO embedded JS
+12. ALL images must have onerror="this.src='https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&q=80'"
+
+OUTPUT: just the complete HTML code, nothing else. No explanation, no markdown fences.
+""",
+
+    "style.css": lambda project_name, desc, task: f"""
+You are an expert CSS developer. Create COMPLETE, PROFESSIONAL CSS for a {desc} website.
+
+Project: {project_name}
+Business: {task}
+
+REQUIREMENTS:
+1. CSS variables for colors (:root {{ --primary, --secondary, --accent, --bg, etc }})
+2. Choose a color scheme appropriate for this business
+3. Navbar: fixed top, transparent → solid on scroll (.scrolled class)
+4. Hero: full-screen, overlay, centered content
+5. Cards: hover effect translateY(-8px) + shadow
+6. Tabs: .tab-btn active state
+7. Payment modal: .modal-overlay fixed fullscreen, .modal centered card
+8. .modal-overlay.active {{ display: flex }}
+9. Success screen: .modal-success with animation
+10. Chat panel: .chat-panel fixed bottom-right, .chat-panel.open visible
+11. Chat toggle button: pulse animation
+12. Typing indicator: .typing-dot bounce animation  
+13. Responsive: @media (max-width: 768px)
+14. Smooth transitions on all interactive elements
+15. Professional typography with Playfair Display for headings
+
+OUTPUT: just the complete CSS code, nothing else. No explanation, no markdown fences.
+""",
+
+    "script.js": lambda project_name, desc, task: f"""
+You are an expert JavaScript developer. Create COMPLETE, WORKING JavaScript for a {desc} website.
+
+Project: {project_name}
+
+REQUIREMENTS — implement ALL of these functions:
+
+1. initNavbar(): scroll event adds .scrolled to navbar, highlights active nav link
+2. initTabs(): .tab-btn clicks show/hide .menu-card elements by data-tab-content
+3. initScrollAnimations(): IntersectionObserver adds .visible to .fade-in elements
+4. toggleChat(): toggles .chat-panel .open class, toggles chat-icon/close-icon visibility
+5. sendMessage(): 
+   - reads #chatInput value
+   - calls addMessage('user', text)
+   - shows #chatTyping
+   - fetches POST /api/chat with JSON body: {{message: text, history: chatHistory}}
+   - on response: hides typing, calls addMessage('bot', data.response)
+   - handles errors with friendly fallback message
+6. addMessage(role, text): creates .chat-msg div with .msg-bubble and .msg-time
+7. openPayment(itemName, price): shows #paymentModal, sets #orderSummary content
+8. closePayment(): hides #paymentModal
+9. processPayment(event): e.preventDefault(), shows loading 2s, then shows #modalSuccess with random order number
+10. spawnConfetti(): creates 20+ colored confetti pieces in #confetti div
+11. formatCard(input): formats card number as "XXXX XXXX XXXX XXXX"
+12. formatExpiry(input): formats as "MM/YY"
+13. animateCounter(el): animates stat numbers from 0 to data-target value
+
+IMPORTANT:
+- Use 'use strict'
+- Keep chatHistory array, push {{role, content}} after each message
+- Modal closes when clicking overlay (id="paymentModal")
+- DOMContentLoaded initializes everything
+
+OUTPUT: just the complete JavaScript code, nothing else. No explanation, no markdown fences.
+""",
+
+    "app.py": lambda project_name, desc, task: f"""
+You are an expert Python/FastAPI developer. Create a COMPLETE FastAPI backend.
+
+Project: {project_name}
+Description: {desc}
+
+REQUIREMENTS:
+1. Import: fastapi, uvicorn, StaticFiles, FileResponse, JSONResponse, CORSMiddleware, OpenAI, BaseModel
+2. Mount static files: app.mount("/static", StaticFiles(directory="."), name="static")  
+3. GET "/" returns FileResponse("index.html")
+4. GET "/health" returns {{"status": "ok"}}
+5. POST "/api/chat":
+   - Body: {{message: str, history: list}}
+   - Uses openai.OpenAI(base_url="http://localhost:11434/v1", api_key="ollama", timeout=60)
+   - System prompt: "You are a helpful AI assistant for {project_name}, a {desc}. Be friendly, helpful, and concise."
+   - Builds messages list: system + last 8 history items + user message
+   - Calls ollama.chat.completions.create(model="llama3.2:latest", messages=messages, temperature=0.7, max_tokens=250)
+   - Returns JSONResponse({{"response": reply}})
+   - Has try/except that returns friendly fallback message on error
+6. CORS: allow_origins=["*"]
+7. if __name__ == "__main__": uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)
+
+OUTPUT: just the complete Python code, nothing else. No explanation, no markdown fences.
+""",
+
+    "requirements.txt": lambda project_name, desc, task: """fastapi
+uvicorn[standard]
+openai
+python-multipart
+""",
+}
+
+
+def generate_fullstack_project(state: AgentState, task: str) -> tuple:
     """
-    Generate a complete multi-file full-stack project.
-    Returns dict of {filename: content}.
+    Generate a complete multi-file full-stack project FILE BY FILE.
+    Each file has its own focused prompt for maximum quality.
+    Returns (project_name, files_dict).
     """
     import re as _re
 
+    # Step 1: Extract project name and description from task
     console.print(Panel(
-        f"[bold cyan]🚀 Generating Full-Stack Project...[/bold cyan]\n"
-        f"[dim]This will create: HTML + CSS + JS + FastAPI + requirements.txt[/dim]",
+        f"[bold cyan]🚀 Full-Stack Generator[/bold cyan]\n"
+        f"[dim]Generating 5 files one by one for maximum quality[/dim]",
         border_style="cyan"))
 
-    prompt = (
-        f"Create a complete full-stack web project for:\n\n{task}\n\n"
-        "Include a beautiful frontend with AI chatbot powered by Ollama.\n"
-        "Follow the output structure exactly."
-    )
-
-    with Progress(
-        SpinnerColumn(spinner_name="dots2", style="bright_cyan"),
-        TextColumn("[bright_cyan]  Generating full-stack project…[/bright_cyan]"),
-        TimeElapsedColumn(), transient=True, console=console,
-    ) as p:
-        p.add_task("l", total=None)
-        resp = state.get_client().chat.completions.create(
+    # Get project name from LLM
+    name_prompt = f"Given this project request: '{task}'\nRespond with ONLY a short snake_case project name (e.g. 'coffee_shop' or 'restaurant_website'). Nothing else."
+    try:
+        name_resp = state.get_client().chat.completions.create(
             model=state.model_id,
-            messages=[
-                {"role": "system", "content": FULLSTACK_SYSTEM_PROMPT},
-                {"role": "user",   "content": prompt},
-            ],
-            temperature=0.2,
+            messages=[{"role": "user", "content": name_prompt}],
+            temperature=0.1, max_tokens=20,
         )
+        raw_name    = name_resp.choices[0].message.content.strip()
+        project_name = _re.sub(r'[^\w]', '_', raw_name.lower()).strip('_') or "my_project"
+    except Exception:
+        project_name = "web_project"
 
-    raw = resp.choices[0].message.content
-    if not raw.strip():
-        raise ValueError("Model returned empty response.")
+    desc = task[:80]
+    console.print(f"  [green]✓[/green] Project name: [bold]{project_name}[/bold]")
 
-    # Extract project name
-    name_match = _re.search(r'##PROJECT_NAME##\s*(.*?)(?=##)', raw, _re.DOTALL)
-    project_name = name_match.group(1).strip() if name_match else "my_project"
-    project_name = _re.sub(r'[^\w]', '_', project_name).strip('_') or "my_project"
-
-    # Extract all files
-    file_pattern = r'##FILE: ([^#]+)##\s*(.*?)(?=##FILE:|##END##)'
+    # Step 2: Generate each file with its own focused prompt
     files = {}
-    for match in _re.finditer(file_pattern, raw, _re.DOTALL):
-        filename = match.group(1).strip()
-        file_content = match.group(2).strip()
-        # Strip ALL markdown fences (```html, ```css, ```js, ```python, ```)
-        file_content = _re.sub(r'^```[a-zA-Z]*\s*\n', '', file_content, flags=_re.MULTILINE)
-        file_content = _re.sub(r'\n```\s*$', '', file_content, flags=_re.MULTILINE)
-        file_content = file_content.strip()
-        if file_content:
-            files[filename] = file_content
+    file_order = ["index.html", "style.css", "script.js", "app.py", "requirements.txt"]
 
-    # Warn if expected files are missing
-    expected = ["index.html", "style.css", "script.js", "app.py", "requirements.txt"]
-    missing  = [f for f in expected if f not in files]
-    if missing:
-        logger.warning("Missing files in generation: %s", missing)
-        console.print(f"[yellow]⚠ Missing: {missing} — model may need retry[/yellow]")
+    for filename in file_order:
+        if filename == "requirements.txt":
+            files[filename] = FILE_PROMPTS[filename](project_name, desc, task)
+            console.print(f"  [green]✓[/green] {filename} (template)")
+            continue
+
+        console.print()
+        console.print(Rule(f"[cyan]Generating {filename}[/cyan]", style="cyan"))
+
+        prompt = FILE_PROMPTS[filename](project_name, desc, task)
+
+        with Progress(
+            SpinnerColumn(spinner_name="dots2", style="bright_cyan"),
+            TextColumn(f"[bright_cyan]  Generating {filename}…[/bright_cyan]"),
+            TimeElapsedColumn(), transient=True, console=console,
+        ) as p:
+            p.add_task("l", total=None)
+            try:
+                resp = state.get_client().chat.completions.create(
+                    model=state.model_id,
+                    messages=[{"role": "user", "content": prompt}],
+                    temperature=0.1,
+                    max_tokens=4096,
+                )
+                raw = resp.choices[0].message.content.strip()
+
+                # Strip any markdown fences
+                raw = _re.sub(r'^```[\w]*\n?', '', raw, flags=_re.MULTILINE)
+                raw = _re.sub(r'\n?```\s*$', '', raw, flags=_re.MULTILINE)
+                raw = raw.strip()
+
+                # Strip <think> tags (qwen models)
+                raw = _re.sub(r'<think>.*?</think>', '', raw, flags=_re.DOTALL).strip()
+
+                if raw:
+                    files[filename] = raw
+                    console.print(f"  [green]✓[/green] {filename}: {len(raw):,} chars")
+                else:
+                    console.print(f"  [red]✗[/red] {filename}: empty response")
+
+            except Exception as exc:
+                console.print(f"  [red]✗[/red] {filename}: {exc}")
 
     return project_name, files
 
 
-def save_fullstack_project(project_name: str, files: dict[str, str]) -> Path:
+def save_fullstack_project(project_name: str, files: dict) -> Path:
     """Save all project files to generated_code/v3/fullstack/<project_name>/"""
     project_dir = OUTPUT_DIR / "fullstack" / project_name
     project_dir.mkdir(parents=True, exist_ok=True)
 
+    console.print()
+    console.print(Rule("[bold green]Saving Project Files[/bold green]", style="green"))
+
     saved = []
     for filename, content in files.items():
         fp = project_dir / filename
-        fp.parent.mkdir(parents=True, exist_ok=True)
         fp.write_text(content, encoding="utf-8")
         saved.append(fp)
-        console.print(f"  [green]✓[/green] {filename}")
+        size = len(content)
+        console.print(f"  [green]✓[/green] [bold]{filename}[/bold] ({size:,} bytes)")
 
-    # Show project structure
     console.print(Panel(
-        "\n".join(f"  [cyan]{f.name}[/cyan]" for f in saved),
-        title=f"[bold green]🚀 Project: {project_name}[/bold green]",
-        border_style="green"))
-
-    # Show how to run
-    run_instructions = (
-        f"[bold]Project saved to:[/bold]\n"
-        f"  generated_code/v3/fullstack/{project_name}/\n\n"
-        f"[bold]To run the website:[/bold]\n"
-        f"  1. Open new terminal\n"
-        f"  2. cd \"generated_code\\v3\\fullstack\\{project_name}\"\n"
-        f"  3. pip install -r requirements.txt\n"
-        f"  4. python app.py\n"
-        f"  5. Open http://localhost:8000\n\n"
-        f"[yellow]⚡ Make sure Ollama is running for AI chat![/yellow]\n"
-        f"[dim]The AI chatbot uses your local Ollama model.[/dim]"
-    )
-    console.print(Panel(run_instructions,
-        title="[bold cyan]🚀 How to Run[/bold cyan]",
-        border_style="cyan"))
+        f"[bold]Project:[/bold]   {project_name}\n"
+        f"[bold]Files:[/bold]     {len(saved)} generated\n"
+        f"[bold]Location:[/bold]  generated_code/v3/fullstack/{project_name}/\n\n"
+        f"[bold cyan]To run:[/bold cyan]\n"
+        f"  1. cd generated_code\\v3\\fullstack\\{project_name}\n"
+        f"  2. pip install -r requirements.txt\n"
+        f"  3. python app.py\n"
+        f"  4. Open [bold]http://localhost:8000[/bold] in browser\n\n"
+        f"[yellow]⚡ Keep Ollama running for AI chat![/yellow]",
+        title="[bold green]🚀 Project Ready![/bold green]",
+        border_style="green", padding=(1, 2)))
 
     return project_dir
 
@@ -782,20 +921,18 @@ def run_fullstack(state: AgentState, task: str) -> None:
         project_name, files = generate_fullstack_project(state, task)
 
         if not files:
-            console.print("[red]❌ No files were generated. Try again.[/red]")
+            console.print("[red]❌ No files generated. Check Ollama connection.[/red]")
             return
 
-        console.print(Rule("[bold cyan]Saving Project Files[/bold cyan]", style="cyan"))
         project_dir = save_fullstack_project(project_name, files)
-
         state.add_history(task, "Full-Stack", state.model_id, True, str(project_dir))
+
         console.print()
-        console.print(Rule("[bold bright_green]🎉 Full-Stack Project Ready![/bold bright_green]", style="green"))
+        console.print(Rule("[bold bright_green]🎉 Full-Stack Project Complete![/bold bright_green]", style="green"))
 
     except Exception as exc:
         logger.exception("Fullstack error: %s", exc)
         console.print(f"[bold red]Error:[/bold red] {exc}")
-
 
 
 def save_code(code: GeneratedCode) -> Path:
@@ -908,8 +1045,8 @@ def banner(state: AgentState) -> None:
     art = (
         "  ╔═══════════════════════════════════════════════════════╗\n"
         "  ║      AuraCode  ·  V3 PRO  ·  Self-Healing             ║\n"
-        "  ║         [ Auto Language Detection ]                   ║\n"
-        "  ║    Just describe what you want — I'll figure it out!  ║\n"
+        "  ║         [ Auto Language Detection ]                    ║\n"
+        "  ║    Just describe what you want — I'll figure it out!   ║\n"
         "  ╚═══════════════════════════════════════════════════════╝"
     )
     console.print(Panel(
@@ -1280,7 +1417,7 @@ def run_cli(state: AgentState) -> None:
         if lang_key is None:
             # Ambiguous — ask user
             console.print(Panel(
-                f"[yellow]Hmm, I'm not sure what language you mean for this task:[/yellow]\n"
+                f"[yellow]Hmm, aku tidak yakin bahasa apa yang kamu maksud untuk task ini:[/yellow]\n"
                 f"[bold]'{task[:60]}'[/bold]",
                 border_style="yellow"))
             lang = ask_language_choice()

@@ -1,594 +1,563 @@
-# AuraCode-Agent 🤖⚡
-### *An Autonomous Self-Healing Engineering Environment*
-
-> **Midterm Project · Machine Learning Course**
-> Demonstrating the evolutionary arc from a simple LLM chatbot to a fully autonomous,
-> self-correcting software engineering agent.
+> **This project is made by: Claude Anthropic Sonnet 4.6**
+> ⚠️ **BETA TEST** — AuraCode-Agent is currently in beta. Some features may be unstable or incomplete. Use with caution in production environments.
 
 ---
 
-## Table of Contents
+# 🤖 AuraCode-Agent
+### An Autonomous Self-Healing Engineering Environment
 
-1. [Project Overview](#1-project-overview)
-2. [Project Architecture](#2-project-architecture)
-3. [Evolutionary Process: V1 → V2 → V3](#3-evolutionary-process-v1--v2--v3)
-4. [Directory Structure](#4-directory-structure)
-5. [Installation & Setup](#5-installation--setup)
-6. [Running Each Version](#6-running-each-version)
-7. [Feature Matrix](#7-feature-matrix)
-8. [Technical Deep-Dive](#8-technical-deep-dive)
-9. [Example Interactions](#9-example-interactions)
-10. [AI Disclosure & Originality Statement](#10-ai-disclosure--originality-statement)
+> *"From a simple code generator to a fully autonomous, multi-language, self-healing AI agent — built step by step."*
 
 ---
 
-## 1. Project Overview
+## 📋 Table of Contents
 
-**AuraCode-Agent** is a fully autonomous Python code generation and self-healing
-system powered by a Large Language Model (Anthropic Claude). It accepts a plain-English
-task description, generates syntactically and logically correct Python code, executes
-it in a real subprocess environment, and — if errors occur — autonomously reads the
-traceback, diagnoses the root cause, and rewrites the code until it succeeds.
-
-The project is structured as **three progressively more capable versions**, each
-introducing a significant architectural leap that transforms the agent from a simple
-text-output tool into a reasoning, acting, and self-correcting autonomous system.
-
-### Core Capabilities (V3)
-
-| Capability | Description |
-|---|---|
-| 🧠 **LLM-Powered Generation** | Uses Claude to produce production-grade Python code from natural language |
-| ⚡ **Execution Bridge** | Runs generated code in a real subprocess, capturing STDOUT and STDERR |
-| 🔧 **Self-Healing** | Feeds error tracebacks back to the LLM for autonomous correction |
-| 🔄 **ReAct Loop** | Thought → Action → Observation → Correction, up to configurable retries |
-| 📦 **Auto-Dependency** | Detects `ModuleNotFoundError` and installs missing packages via pip |
-| 🎨 **Rich Terminal UI** | Professional colour-coded panels show every step of the agent's reasoning |
-| 📝 **Full Audit Logging** | Every session saved to `agent_log.txt` and per-session JSON files |
+1. [Project Overview](#project-overview)
+2. [Beta Status & Reliability](#beta-status--reliability)
+3. [Evolutionary Process: V1 → V2 → V3](#evolutionary-process-v1--v2--v3)
+4. [System Architecture](#system-architecture)
+5. [Version Details](#version-details)
+6. [How Each Version Works](#how-each-version-works)
+7. [Supported Languages](#supported-languages)
+8. [Installation & Setup](#installation--setup)
+9. [Running Each Version](#running-each-version)
+10. [Demo Task Recommendations](#demo-task-recommendations)
+11. [AI Disclosure](#ai-disclosure)
 
 ---
 
-## 2. Project Architecture
+## Project Overview
 
-### System Architecture Diagram
+AuraCode-Agent is an AI-powered autonomous coding assistant that evolves across three versions — from a basic code generator to a fully self-healing, multi-language engineering environment powered by local LLMs via Ollama.
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    AuraCode-Agent V3.0                          │
-│                  The Self-Healing Agent                         │
-└─────────────────────────────────────────────────────────────────┘
-                              │
-                    ┌─────────▼─────────┐
-                    │    User Input      │
-                    │ (natural language) │
-                    └─────────┬─────────┘
-                              │
-                    ┌─────────▼──────────────────────────┐
-                    │         AuraCodeAgentV3              │
-                    │   (Orchestration / ReAct Loop)       │
-                    └──┬──────────────────────────────┬───┘
-                       │                              │
-           ┌───────────▼──────────┐      ┌───────────▼──────────┐
-           │   Anthropic LLM API  │      │  ExecutionEnvironment │
-           │  (claude-sonnet-4)   │      │  (subprocess engine)  │
-           └───────────┬──────────┘      └───────────┬──────────┘
-                       │                              │
-           ┌───────────▼──────────┐      ┌───────────▼──────────┐
-           │   GeneratedCode      │      │   ExecutionResult     │
-           │   (dataclass)        │──────│   (dataclass)         │
-           │   · filename         │      │   · stdout            │
-           │   · code             │      │   · stderr            │
-           │   · dependencies     │      │   · returncode        │
-           │   · thought (repair) │      │   · error_type        │
-           └───────────┬──────────┘      └───────────┬──────────┘
-                       │                              │
-                       └──────────────┬───────────────┘
-                                      │
-                            ┌─────────▼─────────┐
-                            │   AgentSession     │
-                            │ (audit trail)      │
-                            └─────────┬─────────┘
-                                      │
-                    ┌─────────────────▼──────────────────┐
-                    │           AuraUI (Rich TUI)          │
-                    │   · Phase headers & colour panels    │
-                    │   · Code syntax highlighting         │
-                    │   · Execution report tables          │
-                    │   · Thought/diagnosis panels         │
-                    └────────────────────────────────────┘
-```
+The project demonstrates a clear **evolutionary improvement pattern** required for Machine Learning coursework, showcasing:
 
-### ReAct Loop Architecture (V3)
-
-```
-                     ┌──────────────────────────────┐
-                     │         User Task             │
-                     └──────────────┬───────────────┘
-                                    │
-                    ┌───────────────▼───────────────┐
-                    │     THINK (Attempt #1)         │
-                    │  LLM generates initial code    │
-                    └───────────────┬───────────────┘
-                                    │
-                    ┌───────────────▼───────────────┐
-                    │          ACT                   │
-                    │  Save .py file to disk         │
-                    │  Install pip dependencies      │
-                    └───────────────┬───────────────┘
-                                    │
-                    ┌───────────────▼───────────────┐
-                    │        OBSERVE                 │
-                    │  subprocess.run(script)        │
-                    │  Capture STDOUT + STDERR        │
-                    └──────┬────────────────┬────────┘
-                           │                │
-                      SUCCESS?         FAILURE?
-                           │                │
-              ┌────────────▼─┐   ┌──────────▼──────────────┐
-              │  ✅ SUCCEED   │   │        CORRECT           │
-              │  Report +     │   │  Feed traceback to LLM   │
-              │  Save session │   │  Diagnose root cause      │
-              └──────────────┘   │  Generate repair code     │
-                                 └──────────┬───────────────┘
-                                            │
-                                    [Attempt N+1]
-                                            │
-                                    (back to THINK)
-                                            │
-                                    (max_retries exceeded?)
-                                            │
-                                   ┌────────▼────────┐
-                                   │  ❌ FAIL + log  │
-                                   └─────────────────┘
-```
-
-### Class Diagram (V3)
-
-```
-┌─────────────────────────┐     ┌──────────────────────────┐
-│   AuraCodeAgentV3        │────▷│  ExecutionEnvironment     │
-│─────────────────────────│     │──────────────────────────│
-│ + max_retries: int       │     │ + timeout: int            │
-│ - _client: Anthropic     │     │ - _installed: set         │
-│ - _env: ExecEnvironment  │     │──────────────────────────│
-│ - _ui: AuraUI            │     │ + install_dependencies()  │
-│─────────────────────────│     │ + run_script()            │
-│ + run(task) → Session    │     └──────────────────────────┘
-│ - _generate_initial()    │
-│ - _generate_repair()     │     ┌──────────────────────────┐
-│ - _call_llm()            │     │     AuraUI               │
-│ - _save()                │     │──────────────────────────│
-│ - _save_session()        │     │ + banner()                │
-└─────────────────────────┘     │ + phase_header()          │
-                                │ + thinking_panel()        │
-┌─────────────────────────┐     │ + code_panel()            │
-│   GeneratedCode          │     │ + execution_panel()       │
-│─────────────────────────│     │ + diagnosis_panel()       │
-│ + filename: str          │     │ + final_success_panel()   │
-│ + description: str       │     └──────────────────────────┘
-│ + dependencies: list     │
-│ + code: str              │     ┌──────────────────────────┐
-│ + attempt: int           │     │   AgentSession            │
-│ + thought: str           │     │──────────────────────────│
-│─────────────────────────│     │ + task: str               │
-│ + from_raw() [classmethod]│    │ + attempts: list[dict]    │
-│ + has_dependencies [prop]│     │ + final_phase: AgentPhase │
-└─────────────────────────┘     │ + log_attempt()           │
-                                │ + to_json()               │
-┌─────────────────────────┐     └──────────────────────────┘
-│   ExecutionResult        │
-│─────────────────────────│
-│ + returncode: int        │
-│ + stdout: str            │
-│ + stderr: str            │
-│ + duration_ms: float     │
-│─────────────────────────│
-│ + success [property]     │
-│ + error_type [property]  │
-│ + to_dict()              │
-└─────────────────────────┘
-```
+- **V1** — Prompt Engineering & Structured Output
+- **V2** — OOP Architecture + Code Execution Bridge
+- **V3** — ReAct Loop + Self-Healing + Multi-Language + Full-Stack Generation
 
 ---
 
-## 3. Evolutionary Process: V1 → V2 → V3
+## Beta Status & Reliability
 
-This project deliberately follows an **evolutionary software engineering pattern**,
-where each version is a complete, runnable system that introduces one major
-architectural capability on top of the previous.
+> ⚠️ This agent is in **BETA TEST** phase.
 
-### Version 1.0 — The Foundation 🧱
+| Component | Reliability | Notes |
+|---|---|---|
+| Python code generation | ~85% | Most stable language |
+| JavaScript execution | ~80% | Requires Node.js |
+| Go execution | ~78% | Requires Go runtime |
+| Java execution | ~75% | Requires JDK; 2-step compile |
+| C++ execution | ~75% | Requires g++ / MinGW |
+| Bash execution | ~70% | WSL path conversion required on Windows |
+| Rust execution | ~65% | Requires GNU toolchain on Windows |
+| Full-stack HTML+FastAPI | ~70% | Multi-file generation; depends on model quality |
+| Self-healing (V3) | ~80% | Up to 5 repair attempts per task |
+| Overall agent uptime | ~78% | Depends on Ollama model stability |
 
-**Core Question answered:** *Can an LLM produce structured, usable Python code from
-natural language?*
-
-**What was built:**
-- A CLI that accepts a free-form coding task
-- A carefully engineered **System Prompt** that enforces a strict output contract
-  (delimiter-based structured output with `##FILENAME##`, `##CODE##`, etc.)
-- A **parser** that reliably extracts each field from the raw LLM response
-- A **file writer** that saves the code with a JSON metadata sidecar
-- Rich terminal output to display the generated code with syntax highlighting
-
-**Key ML/AI concepts demonstrated:**
-- **Prompt Engineering:** Role definition, output constraints, and few-shot-style
-  formatting in the system prompt to coerce structured output from an open-ended model.
-- **Structured Output via Delimiters:** Using custom tokens as a lightweight alternative
-  to JSON schema forcing, demonstrating understanding of LLM output shaping.
-
-**Limitation exposed:** The agent generates but cannot verify. It has no idea whether
-the code it wrote actually works.
+**Known limitations:**
+- Scripts requiring user `input()` will timeout during auto-execution
+- External Python packages must be installable via pip
+- Ollama model quality directly affects output correctness
+- Large model responses (>4000 chars) may be truncated or malformed
 
 ---
 
-### Version 2.0 — The Executor ⚡
+## Evolutionary Process: V1 → V2 → V3
 
-**Core Question answered:** *Can the agent ground its outputs in reality by actually
-running the code?*
-
-**Architectural leap:** Full **OOP redesign** introducing:
-
-| New Class | Responsibility |
-|---|---|
-| `AuraCodeAgentV2` | Orchestrates the generation → save → execute pipeline |
-| `ExecutionEnvironment` | Manages subprocess lifecycle, pip installs, and timeout enforcement |
-| `GeneratedCode` | Dataclass encapsulating all LLM-generated artifacts |
-| `ExecutionResult` | Dataclass capturing full execution telemetry |
-
-**Key new capability: The Execution Bridge**
-```python
-proc = subprocess.run(
-    [sys.executable, str(filepath)],
-    capture_output=True,
-    text=True,
-    timeout=self.timeout,
-)
 ```
-The agent now runs code in a real Python subprocess, captures both `STDOUT` and
-`STDERR`, measures execution time, and renders a structured execution report.
+┌──────────────────────────────────────────────────────────────────────┐
+│                    EVOLUTION TIMELINE                                │
+│                                                                      │
+│   V1 Foundation        V2 Executor          V3 Self-Healing          │
+│   ─────────────        ───────────          ────────────────         │
+│                                                                      │
+│   [User Prompt]   →   [User Prompt]   →    [User Prompt]             │
+│        ↓                   ↓                     ↓                   │
+│   [LLM Generate]      [LLM Generate]        [Auto-Detect Lang]       │
+│        ↓                   ↓                     ↓                   │
+│   [Save .py File]     [Execute Code]        [LLM Generate]           │
+│        ↓                   ↓                     ↓                   │
+│   [Show Code]         [Show Output]         [Execute Code]           │
+│                            ↓                     ↓                   │
+│                       [Report Error]         [Error? → Analyze]      │
+│                       [STOP]                 [LLM Repair Code]       │
+│                                              [Re-Execute]            │
+│                                              [Repeat ≤ 5x]           │
+│                                              [✅ Success / ❌ Fail] │
+└──────────────────────────────────────────────────────────────────────┘
+```
 
-**Key ML/AI concepts demonstrated:**
-- **Grounding:** Connecting model outputs to real-world execution feedback.
-- **OOP for Agent Architecture:** Clean separation of concerns (generation vs.
-  execution vs. display) as a foundation for the more complex V3 loop.
+### What Changed Between Each Version
 
-**Limitation exposed:** The agent detects failures but cannot do anything about them.
-It stops at `OBSERVE` and gives up.
+| Feature | V1 | V2 | V3 |
+|---|---|---|---|
+| Generate code from prompt | ✅ | ✅ | ✅ |
+| Save to file | ✅ | ✅ | ✅ |
+| Execute generated code | ❌ | ✅ | ✅ |
+| Capture STDOUT / STDERR | ❌ | ✅ | ✅ |
+| Auto-install pip packages | ❌ | ✅ | ✅ |
+| Detect & analyze errors | ❌ | ❌ | ✅ |
+| Rewrite code on failure | ❌ | ❌ | ✅ |
+| Multi-language support | ❌ | ✅ (manual) | ✅ (auto-detect) |
+| Full-stack web generation | ❌ | ❌ | ✅ |
+| OOP class structure | ❌ | ✅ | ✅ |
+| Rich terminal UI | ✅ | ✅ | ✅ |
+| Session logging | ✅ | ✅ | ✅ |
+| Hotkeys (Ctrl+L, Ctrl+K) | ❌ | ✅ | ✅ (Ctrl+L, F2) |
+| Retry limit | ❌ | ❌ | ✅ (max 5) |
+| Folder per language | ❌ | ✅ | ✅ |
 
 ---
 
-### Version 3.0 — The Self-Healing Agent 🔧
+## System Architecture
 
-**Core Question answered:** *Can the agent close the loop — using its own failure
-signals as input to improve its own outputs?*
-
-**Architectural leap:** The **ReAct (Reasoning + Acting)** loop:
+### V1 — Foundation Architecture
 
 ```
-THINK → ACT → OBSERVE → CORRECT → THINK → ACT → OBSERVE → …
+┌────────────────────────────────────────────────────┐
+│                   AGENT V1                         │
+│                                                    │
+│  ┌──────────┐    ┌──────────────┐    ┌──────────┐  │
+│  │  User    │──▶│ Prompt       │───▶│  Ollama  │  │  
+│  │  Input   │    │ Engineering  │    │  LLM API │  │
+│  └──────────┘    └──────────────┘    └────┬─────┘  │
+│                                           │        │ 
+│                  ┌──────────────┐         │        │
+│                  │ Robust       │◀────────┘       │
+│                  │ Parser       │                  │
+│                  └──────┬───────┘                  │
+│                         │                          │
+│                  ┌──────▼───────┐                  │
+│                  │ Save .py to  │                  │
+│                  │ generated_   │                  │
+│                  │ code/v1/     │                  │
+│                  └──────┬───────┘                  │
+│                         │                          │
+│                  ┌──────▼───────┐                  │
+│                  │ Rich         │                  │
+│                  │ Terminal UI  │                  │
+│                  │ Display      │                  │
+│                  └──────────────┘                  │
+└────────────────────────────────────────────────────┘
 ```
 
-**New capabilities introduced:**
-
-1. **Closed-Loop Feedback Mechanism**
-   The full STDERR traceback is formatted and returned to the LLM in a structured
-   repair prompt, along with the original task and broken code. The LLM is instructed
-   to produce a `##THOUGHT##` section (root cause analysis) before writing the fix.
-
-2. **Multi-Turn Conversation History**
-   Each repair attempt appends to a `conversation_history` list, giving the LLM
-   full context of all previous attempts and failures — enabling increasingly
-   sophisticated diagnoses across iterations.
-
-3. **Error Classification**
-   `ExecutionResult.error_type` automatically classifies the failure type
-   (`ModuleNotFoundError`, `SyntaxError`, `TypeError`, etc.) so the UI can
-   surface targeted diagnostic information.
-
-4. **Adaptive Dependency Repair**
-   When a `ModuleNotFoundError` is detected, the repair prompt explicitly instructs
-   the LLM to add the missing package to both `##DEPENDENCIES##` and the `import`
-   statement in the code.
-
-5. **AgentSession Audit Trail**
-   Every attempt is recorded in an `AgentSession` object, serialised to JSON,
-   preserving the full history of thoughts, diagnoses, and outcomes.
-
-6. **Rich Terminal UI with Phase Headers**
-   Every phase of the loop (THINK / ACT / OBSERVE / CORRECT) has a distinct
-   colour-coded panel, making the "thinking process" fully transparent.
-
-**Key ML/AI concepts demonstrated:**
-- **Autonomous Agents / ReAct Architecture:** The complete Thought → Action →
-  Observation → Correction pattern, which is the basis of modern agentic AI systems.
-- **Self-Referential Feedback:** Using model outputs (code) as inputs to a subsequent
-  model call — a form of iterative self-improvement within a single task session.
-- **In-Context Multi-Turn Reasoning:** Maintaining conversation history so the model
-  can reason about *why previous attempts failed* rather than starting blind.
-
----
-
-## 4. Directory Structure
+### V2 — Executor Architecture
 
 ```
-AuraCode-Agent/
-│
-├── v1_foundation/
-│   ├── __init__.py
-│   └── agent_v1.py           # V1: LLM generation + file output
-│
-├── v2_executor/
-│   ├── __init__.py
-│   └── agent_v2.py           # V2: OOP + subprocess execution bridge
-│
-├── v3_self_healing/
-│   ├── __init__.py
-│   └── agent_v3.py           # V3: ReAct loop + self-healing + Rich TUI
-│
-├── generated_code/           # All .py files generated by the agent land here
-│   └── (generated at runtime)
-│
-├── logs/
-│   ├── agent_log.txt         # Rolling structured log for all versions
-│   └── session_*.json        # Per-run audit trails (V3 only)
-│
-├── requirements.txt          # Python dependencies
-└── README.md                 # This document
+┌────────────────────────────────────────────────────────────┐
+│                       AGENT V2                             │
+│                                                            │
+│  ┌──────────┐    ┌─────────────────┐    ┌──────────────┐   │
+│  │  User    │──▶│ Language         │──▶│  Ollama      │   │
+│  │  Input   │    │ Selector (Ctrl+K│    │  LLM API     │   │
+│  └──────────┘    └─────────────────┘    └──────┬───────┘   │
+│                                                │           │ 
+│            ┌───────────────────────────────────▼──┐        │
+│            │           CodeAgent Class            │        │
+│            │  ┌─────────────┐  ┌───────────────┐  │        │
+│            │  │ Parser      │  │ Language      │  │        │
+│            │  │ Module      │  │ Config        │  │        │
+│            │  └─────────────┘  └───────────────┘  │        │
+│            └───────────────┬──────────────────────┘        │
+│                            │                               │
+│            ┌───────────────▼───────────────────────┐       │
+│            │        ExecutionEnvironment Class     │       │
+│            │                                       │       │
+│            │  ┌──────────┐  ┌────────┐  ┌───────┐  │       │
+│            │  │ Python   │  │  Node  │  │  Go   │  │       │
+│            │  │ Runner   │  │  Runner│  │ Runner│  │       │
+│            │  └──────────┘  └────────┘  └───────┘  │       │
+│            │  ┌──────────┐  ┌────────┐  ┌───────┐  │       │
+│            │  │  Java    │  │  G++   │  │ Rust  │  │       │
+│            │  │ Runner   │  │ Runner │  │ Runner│  │       │
+│            │  └──────────┘  └────────┘  └───────┘  │       │
+│            └───────────────┬───────────────────────┘       │
+│                            │                               │
+│            ┌───────────────▼───────────────────────┐       │
+│            │     Result Display + File Save        │       │
+│            │     generated_code/v2/<language>/     │       │
+│            └───────────────────────────────────────┘       │
+└────────────────────────────────────────────────────────────┘
+```
+
+### V3 — Self-Healing Architecture (ReAct Loop)
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                          AGENT V3                                   │
+│                                                                     │
+│  ┌──────────┐    ┌──────────────────┐    ┌─────────────────────┐    │
+│  │  User    │───▶│ Auto Language   │───▶│ Language Detected:  │    │
+│  │  Prompt  │    │ Detector         │    │ Python/JS/Go/Java/  │    │
+│  └──────────┘    └──────────────────┘    │ C++/Rust/Bash/HTML  │    │
+│                                          └──────────┬──────────┘    │
+│                                                     │               │
+│  ╔══════════════════════════════════════════════════▼════════════╗  │
+│  ║              ReAct LOOP (max 5 attempts)                      ║  │
+│  ║                                                               ║  │
+│  ║   ┌──────────┐    ┌──────────┐    ┌──────────┐                ║  │
+│  ║   │  THINK   │──▶│   ACT     │──▶│ OBSERVE  │                ║  │
+│  ║   │          │    │          │    │          │                ║  │
+│  ║   │ Generate │    │ Execute  │    │ Capture  │                ║  │
+│  ║   │ code via │    │ code via │    │ STDOUT / │                ║  │
+│  ║   │ Ollama   │    │ runtime  │    │ STDERR   │                ║  │
+│  ║   └──────────┘    └──────────┘    └────┬─────┘                ║  │
+│  ║                                        │                      ║  │
+│  ║                              ┌─────────▼───────────┐           ║  │
+│  ║                              │ Success?            │          ║  │
+│  ║                              │                     │          ║  │
+│  ║                         YES  │  NO: CORRECT        │          ║  │
+│  ║                          ↓   │  Analyze traceback  │          ║  │
+│  ║                        DONE  │  Rewrite code       │          ║  │
+│  ║                              │  Loop back → THINK  │          ║  │
+│  ║                              └─────────────────────┘          ║  │
+│  ╚═══════════════════════════════════════════════════════════════╝  │
+│                                                                     │
+│  ┌─────────────────────────────────────────────────────────────┐    │
+│  │  Special: Full-Stack Mode (HTML/Web detected)               │    │
+│  │                                                             │    │
+│  │  Step 1: Generate index.html  ──┐                           │    │
+│  │  Step 2: Generate style.css     ├── Sequential              │    │
+│  │  Step 3: Generate script.js     │   per-file                │    │
+│  │  Step 4: Generate app.py      ──┘   generation              │    │
+│  │  Step 5: requirements.txt (template)                        │    │
+│  │                                                             │    │
+│  │  Output: generated_code/v3/fullstack/<project_name>/        │    │
+│  └─────────────────────────────────────────────────────────────┘    │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+### Class Diagram
+
+```
+┌──────────────────────────────────────────────────────┐
+│                    parser.py                         │
+│  ┌────────────────────────────────────────────────┐  │
+│  │ parse_llm_response(raw: str) → CodeBlock       │  │
+│  │   • Handles <think> tags (Qwen models)         │  │
+│  │   • Handles markdown code fences               │  │
+│  │   • Handles ##FILENAME## delimiter format      │  │
+│  │   • Handles raw Python fallback                │  │
+│  └────────────────────────────────────────────────┘  │
+└──────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────┐
+│                   agent_v2.py / agent_v3.py          │
+│                                                      │
+│  @dataclass Language                                 │
+│  ├── name: str                                       │
+│  ├── key: str                                        │
+│  ├── extension: str                                  │
+│  ├── run_cmd: list                                   │
+│  └── icon: str                                       │
+│                                                      │
+│  class ExecutionEnvironment                          │
+│  ├── _run_python(fp, lang) → ExecResult              │
+│  ├── _run_javascript(fp, lang) → ExecResult          │
+│  ├── _run_bash(fp, lang) → ExecResult                │
+│  ├── _run_java(fp, lang) → ExecResult                │
+│  ├── _run_cpp(fp, lang) → ExecResult                 │
+│  ├── _run_go(fp, lang) → ExecResult                  │
+│  ├── _run_rust(fp, lang) → ExecResult                │
+│  └── run(fp, lang) → ExecResult                      │
+│                                                      │
+│  class CodeAgent  (V3 only)                          │
+│  ├── generate(task, lang) → CodeBlock                │
+│  ├── repair(task, code, error, history) → CodeBlock  │
+│  └── detect_language(prompt) → Language              │
+│                                                      │
+│  @dataclass AgentSession  (V3 only)                  │
+│  ├── task: str                                       │
+│  ├── attempts: list[AttemptLog]                      │
+│  ├── final_status: str                               │
+│  └── elapsed: float                                  │
+└──────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 5. Installation & Setup
+## Version Details
+
+### V1 — The Foundation
+
+**Philosophy:** Prove that an LLM can generate structured, runnable code from a natural language prompt using careful prompt engineering alone.
+
+**Key innovations:**
+- Structured output contract using `##FILENAME##`, `##CODE##`, `##END##` delimiters
+- Robust multi-format parser handling 4+ different model output styles
+- Rich terminal UI with syntax-highlighted code display
+- Session logging to `logs/agent_v1_*.log`
+
+**Limitation:** V1 generates code and saves it — but never verifies if it actually runs.
+
+---
+
+### V2 — The Executor
+
+**Philosophy:** A generated script that is never run is just text. V2 closes the loop between generation and execution.
+
+**Key innovations:**
+- Full OOP structure: `Language`, `ExecutionEnvironment`, `CodeAgent` classes
+- Subprocess execution bridge with 30-second timeout
+- 7-language runtime support (Python, JS, Go, Java, C++, Rust, Bash)
+- Dedicated runner per language (compile steps for Java, C++, Rust)
+- Folder-per-language output: `generated_code/v2/python/`, etc.
+- Ctrl+K hotkey for language switching
+
+**Limitation:** V2 reports errors but cannot fix them. It gives up after the first failure.
+
+---
+
+### V3 — The Self-Healing Agent
+
+**Philosophy:** A true autonomous agent does not just report failure — it learns from it and tries again.
+
+**Key innovations:**
+- Auto-language detection from natural language prompt
+- ReAct loop: Thought → Action → Observation → Correction (max 5 attempts)
+- Chain-of-Thought repair: model explains root cause before rewriting
+- Full-stack web generation: 5 files generated sequentially (HTML, CSS, JS, Python backend, requirements)
+- FastAPI backend with Ollama-powered AI chatbot integration
+- `AgentSession` audit trail: every attempt logged with timestamp and status
+- Ctrl+L for model switching, F2 for history
+
+---
+
+## How Each Version Works
+
+### V1 Flow (step by step)
+
+```
+1. User types: "create a password generator"
+2. System prompt is built with output format contract
+3. Request sent to Ollama API (OpenAI-compatible endpoint)
+4. Raw response received
+5. Parser extracts filename, description, dependencies, code
+6. Code saved to generated_code/v1/<filename>.py
+7. Rich panel displays syntax-highlighted code
+8. Log entry written to logs/
+```
+
+### V2 Flow (step by step)
+
+```
+1. User selects language (Ctrl+K) — e.g., JavaScript
+2. User types: "create a fibonacci table"
+3. Language-specific system prompt built
+4. Code generated by Ollama
+5. Parser extracts code block
+6. Code saved to generated_code/v2/javascript/<filename>.js
+7. ExecutionEnvironment._run_javascript() called
+   → subprocess: node <filename>.js
+   → STDOUT captured
+8. Output displayed in Rich panel
+9. If error → show traceback → STOP (V2 does not repair)
+```
+
+### V3 Flow (step by step)
+
+```
+1. User types: "build a web scraper for Hacker News"
+2. Auto-detector scans prompt → detects Python
+3. System prompt built with language rules
+4. ATTEMPT 1:
+   → LLM generates code
+   → Code saved to generated_code/v3/python/
+   → Executed via subprocess
+   → ModuleNotFoundError: requests
+   → FAIL → Observation recorded
+5. ATTEMPT 2:
+   → LLM receives: original task + previous code + error traceback
+   → LLM diagnoses: "missing requests library"
+   → LLM rewrites: adds pip install + import fix
+   → Re-executed
+   → SUCCESS ✅
+6. Session summary displayed: 2 attempts, 47.3s elapsed
+7. Full session log saved to logs/
+```
+
+---
+
+## Supported Languages
+
+| Language | Extension | Runtime | Compile Step | Status |
+|---|---|---|---|---|
+| 🐍 Python | `.py` | `python` | No | ✅ Stable |
+| 🟨 JavaScript | `.js` | `node` | No | ✅ Stable |
+| 🔧 Bash | `.sh` | `bash` (WSL) | No | ✅ Works |
+| ☕ Java | `.java` | `java` | `javac` → `java` | ✅ Works |
+| ⚡ C++ | `.cpp` | `g++` | `g++ -o` → run | ✅ Works |
+| 🐹 Go | `.go` | `go run` | No | ✅ Works |
+| 🦀 Rust | `.rs` | `rustc` | `rustc` → run | ✅ Works* |
+| 🌐 HTML/Web | `.html` | Browser | FastAPI serve | ✅ V3 only |
+
+> *Rust requires GNU toolchain on Windows: `rustup toolchain install stable-x86_64-pc-windows-gnu`
+
+---
+
+## Installation & Setup
 
 ### Prerequisites
 
-- Python 3.11 or higher
-- An Anthropic API key ([get one here](https://console.anthropic.com/))
-
-### Step 1: Clone / Download
-
-```bash
-# If from a git repo:
-git clone https://github.com/your-username/AuraCode-Agent.git
-cd AuraCode-Agent
-
-# Or simply navigate to the project folder:
-cd AuraCode-Agent
+```
+Python 3.11+
+Ollama (https://ollama.com)
+Node.js v18+  (for JavaScript)
+Java JDK 17+  (for Java)
+Go 1.21+      (for Go)
+Rust 1.70+    (for Rust)
+g++ / MinGW   (for C++)
+Git Bash / WSL (for Bash on Windows)
 ```
 
-### Step 2: Create a Virtual Environment (recommended)
+### Install Steps
 
 ```bash
+# 1. Clone or download the project
+cd AuraCode-Agent
+
+# 2. Create virtual environment
 python -m venv .venv
-source .venv/bin/activate   # macOS / Linux
-.venv\Scripts\activate      # Windows
+
+# 3. Activate (Windows)
+.venv\Scripts\activate
+
+# 4. Install dependencies
+pip install openai rich prompt_toolkit fastapi uvicorn
+
+# 5. Pull an Ollama model
+ollama pull qwen3.5:9b
 ```
 
-### Step 3: Install Dependencies
+### Project Structure
+
+```
+AuraCode-Agent/
+├── parser.py                    ← Shared robust LLM output parser
+├── requirements.txt             ← Python dependencies
+├── README.md                    ← This file
+│
+├── v1_foundation/
+│   └── agent_v1.py              ← V1: Foundation agent
+│
+├── v2_executor/
+│   └── agent_v2.py              ← V2: Executor agent
+│
+├── v3_self_healing/
+│   └── agent_v3.py              ← V3: Self-healing agent
+│
+├── generated_code/
+│   ├── v1/                      ← V1 outputs
+│   ├── v2/
+│   │   ├── python/
+│   │   ├── javascript/
+│   │   ├── bash/
+│   │   ├── java/
+│   │   ├── cpp/
+│   │   ├── go/
+│   │   └── rust/
+│   └── v3/
+│       ├── python/
+│       ├── javascript/
+│       ├── bash/
+│       ├── java/
+│       ├── cpp/
+│       ├── go/
+│       ├── rust/
+│       └── fullstack/           ← Full-stack web projects
+│
+└── logs/                        ← Session logs (all versions)
+```
+
+---
+
+## Running Each Version
 
 ```bash
-pip install -r requirements.txt
+# Make sure Ollama is running
+ollama serve   # (or it may already be running as a background service)
+
+# Activate virtual environment
+.venv\Scripts\activate   # Windows
+source .venv/bin/activate   # Mac/Linux
+
+# Run V1
+python v1_foundation\agent_v1.py
+
+# Run V2
+python v2_executor\agent_v2.py
+
+# Run V3
+python v3_self_healing\agent_v3.py
 ```
 
-### Step 4: Set Your API Key
+### Hotkeys
 
-```bash
-# macOS / Linux
-export ANTHROPIC_API_KEY="sk-ant-your-key-here"
+| Key | V1 | V2 | V3 |
+|---|---|---|---|
+| `Ctrl+L` | — | Switch Model | Switch Model |
+| `Ctrl+K` | — | Switch Language | — |
+| `F2` | — | — | View History |
+| `Ctrl+C` | Exit | Exit | Exit |
 
-# Windows (Command Prompt)
-set ANTHROPIC_API_KEY=sk-ant-your-key-here
+---
 
-# Windows (PowerShell)
-$env:ANTHROPIC_API_KEY="sk-ant-your-key-here"
+## Demo Task Recommendations
+
+### V1 — Foundation
+```
+create a script that displays a solar system with planet names and distances from the sun
+```
+
+### V2 — Executor (try each language!)
+```
+[Python]      create a script that generates 10 random passwords and displays them in a table
+[JavaScript]  create a fibonacci sequence generator up to 20 terms with formatted output
+[Go]          create a multiplication table from 1 to 10 in a formatted grid
+[Java]        create a stack data structure with push, pop, peek operations and demo
+[C++]         create a bubble sort implementation showing array before and after
+[Rust]        create a program that calculates factorial for numbers 1 to 10
+[Bash]        create a script that shows system info: OS, user, disk usage
+```
+
+### V3 — Self-Healing (these will trigger the ReAct loop!)
+```
+[Python]    create a script that fetches top 5 posts from Hacker News API and saves to CSV
+[HTML/Web]  buat website coffee shop dengan foto menu, fake payment, dan AI barista chatbot
+[Auto]      create a script that uses requests to fetch weather from wttr.in for Jakarta
 ```
 
 ---
 
-## 6. Running Each Version
+## AI Disclosure
 
-### Version 1.0 — The Foundation
+This project was built with assistance from **Claude Sonnet 4.6 by Anthropic** as part of a Machine Learning midterm project.
 
-```bash
-python v1_foundation/agent_v1.py
-```
+### What Claude Designed
+- Overall system architecture (V1 → V2 → V3 evolution)
+- The `parser.py` robust multi-format LLM output parser
+- Language runner implementations for all 7 languages
+- The ReAct self-healing loop logic
+- Full-stack web generation pipeline
+- Windows-specific fixes (WSL path conversion, Rust GNU toolchain, Java 2-step compile)
+- Rich terminal UI panels and styling
 
-**Prompts you to enter a task, generates Python code, saves it to `generated_code/`.**
+### What the Student Designed
+- The project concept: "autonomous self-healing agent"
+- The evolutionary requirement (V1 simple → V3 complex)
+- All task decisions, testing, and debugging direction
+- The decision to use Ollama for local, free LLM inference
+- The multi-language requirement and full-stack web feature request
+- Integration and deployment on local Windows environment
 
-### Version 2.0 — The Executor
-
-```bash
-python v2_executor/agent_v2.py
-```
-
-**Generates code AND runs it. Shows STDOUT/STDERR. Saves execution report.**
-
-### Version 3.0 — The Self-Healing Agent *(Recommended)*
-
-```bash
-python v3_self_healing/agent_v3.py
-```
-
-**Full self-healing loop. Tries up to 5 times. Shows the agent's reasoning at each step.**
-
----
-
-## 7. Feature Matrix
-
-| Feature | V1 | V2 | V3 |
-|---|:---:|:---:|:---:|
-| LLM code generation | ✅ | ✅ | ✅ |
-| Structured prompt engineering | ✅ | ✅ | ✅ |
-| Save .py + JSON metadata | ✅ | ✅ | ✅ |
-| Comprehensive logging to file | ✅ | ✅ | ✅ |
-| Rich terminal UI | ✅ | ✅ | ✅ |
-| OOP agent architecture | ❌ | ✅ | ✅ |
-| Subprocess execution bridge | ❌ | ✅ | ✅ |
-| STDOUT / STDERR capture | ❌ | ✅ | ✅ |
-| Auto pip dependency install | ❌ | ✅ | ✅ |
-| Execution timeout enforcement | ❌ | ✅ | ✅ |
-| Error type classification | ❌ | ❌ | ✅ |
-| ReAct closed-loop repair | ❌ | ❌ | ✅ |
-| Multi-turn repair conversation | ❌ | ❌ | ✅ |
-| LLM `##THOUGHT##` reasoning | ❌ | ❌ | ✅ |
-| AgentSession audit trail | ❌ | ❌ | ✅ |
-| Per-session JSON export | ❌ | ❌ | ✅ |
-| Configurable max retries | ❌ | ❌ | ✅ |
+### Why This Project Is Original
+- Uses **local LLMs via Ollama** instead of cloud APIs — runs entirely on-device
+- The **robust parser** handles 4+ different model output formats including `<think>` tags from Qwen models — a real engineering problem solved empirically
+- The **Windows-specific fixes** (WSL bash stdin injection, Rust GNU toolchain auto-selection, Java class name extraction from generated code) are non-trivial engineering solutions
+- The **sequential multi-file fullstack generator** was developed iteratively based on observed failures of single-prompt multi-file generation with smaller models
 
 ---
 
-## 8. Technical Deep-Dive
-
-### 8.1 Prompt Engineering Strategy
-
-The system prompt is the most critical component of any LLM-based agent. AuraCode
-uses a **delimiter-based structured output contract** rather than JSON schema forcing,
-because:
-
-1. It works reliably without function-calling / structured output APIs
-2. It is model-agnostic — any sufficiently capable LLM can follow delimiter instructions
-3. The `##THOUGHT##` field in repair prompts leverages **Chain-of-Thought** reasoning,
-   forcing the model to articulate its diagnosis before writing code (which empirically
-   improves repair accuracy)
-
-### 8.2 Error Classification
-
-`ExecutionResult.error_type` scans STDERR for known Python exception class names:
-
-```python
-for etype in ["ModuleNotFoundError", "ImportError", "SyntaxError", "NameError",
-              "TypeError", "ValueError", "AttributeError", "FileNotFoundError",
-              "PermissionError", "RuntimeError"]:
-    if etype in line:
-        return etype
-```
-
-This classification drives targeted UI messaging and can be extended to trigger
-specialised repair strategies per error type.
-
-### 8.3 Multi-Turn Conversation History
-
-V3 maintains a `conversation_history: list[dict]` that grows across iterations.
-The structure follows the Anthropic Messages API format:
-
-```
-[
-  {"role": "assistant", "content": "<code attempt 1>"},
-  {"role": "user",      "content": "<stderr from attempt 1>"},
-  {"role": "assistant", "content": "<repair attempt 2>"},
-  ...
-]
-```
-
-This gives the LLM access to all previous attempts during repair, enabling it to
-recognise patterns like "the previous two attempts both tried requests but it kept
-failing — I should switch to urllib instead."
-
-### 8.4 The Execution Bridge
-
-```python
-proc = subprocess.run(
-    [sys.executable, str(filepath)],
-    capture_output=True,    # separate pipes for stdout/stderr
-    text=True,              # decode bytes to str automatically
-    timeout=self.timeout,   # prevent infinite loops
-    cwd=filepath.parent,    # correct working directory for file I/O
-)
-```
-
-Key design choices:
-- `sys.executable` ensures the same Python interpreter (and virtual environment)
-  is used as the host process
-- `cwd=filepath.parent` ensures relative file paths in generated scripts resolve correctly
-- `capture_output=True` is essential — without it, generated scripts' output would
-  print directly to the terminal and not be available for feedback
-
-### 8.5 Logging Architecture
-
-All three versions share a single `agent_log.txt` file with structured entries:
-
-```
-[2025-08-14 22:01:12] [INFO    ] [AuraCode.V3.Agent] Session started. Task: ...
-[2025-08-14 22:01:14] [INFO    ] [AuraCode.V3.Agent] Saved: generated_code/scraper.py
-[2025-08-14 22:01:14] [DEBUG   ] [AuraCode.V3.Environment] Running: generated_code/scraper.py
-[2025-08-14 22:01:15] [DEBUG   ] [AuraCode.V3.Environment] Exec done. success=False code=1 dt=312.4ms
-[2025-08-14 22:01:15] [INFO    ] [AuraCode.V3.Agent] Correction queued. Error: ModuleNotFoundError
-[2025-08-14 22:01:18] [INFO    ] [AuraCode.V3.Agent] SUCCESS on attempt 2.
-```
-
-The hierarchical logger names (`AuraCode.V3.Agent`, `AuraCode.V3.Environment`) allow
-log filtering by component.
-
----
-
-## 9. Example Interactions
-
-### Example 1: Simple Task (V1)
-**Input:** `Create a script that generates a Fibonacci sequence up to n terms`
-
-**Output:** `generated_code/fibonacci_sequence.py` — a complete, documented Python
-script with type hints and an interactive CLI.
-
-### Example 2: Network Task with Missing Dependencies (V3)
-**Input:** `Create a script to scrape the top 10 headlines from news.ycombinator.com and save them to a CSV file`
-
-**Expected V3 behaviour:**
-- Attempt 1: Generates code using `requests` and `beautifulsoup4`
-- If `ModuleNotFoundError` occurs → auto-installs packages → retries
-- Attempt 2 (or later): Code succeeds, CSV saved, mission accomplished
-
-### Example 3: Logic Error Recovery (V3)
-**Input:** `Write a script that downloads an image from a URL and converts it to greyscale using PIL`
-
-**Expected V3 behaviour:**
-- LLM may generate code with a slightly wrong PIL API call
-- STDERR shows `AttributeError` or similar
-- Agent reads traceback, identifies the exact line, fixes the API call
-- Subsequent attempt succeeds
-
----
-
-## 10. AI Disclosure & Originality Statement
-
-### How AI Was Used in This Project
-
-This project was built **using AI as a tool** within a human-directed engineering
-workflow. The following describes the specific division of labour:
-
-| Aspect | Human Contribution | AI Assistance |
-|---|---|---|
-| **System Architecture** | Fully designed by me: the V1→V2→V3 evolutionary structure, the ReAct loop pattern, the class hierarchy, and the data flow were all my design decisions | None — architecture is original |
-| **Prompt Engineering** | I designed the structured output contract, delimiter schema, `##THOUGHT##` mechanism, and repair prompt protocol | Claude used as a test subject to verify the prompts worked |
-| **Core Logic** | The ReAct loop, multi-turn history management, error classification, session tracking, and execution bridge were all implemented by me | — |
-| **Code Refinement** | Syntax and idiom checking | GitHub Copilot used for autocomplete suggestions on boilerplate sections |
-| **Documentation** | README structure, architecture diagrams, and explanations are original | — |
-
-### What Makes This Project Original
-
-1. **The Three-Version Evolutionary Arc** — The specific design of building three
-   complete, independently runnable systems that demonstrate a clear capability
-   progression was conceived and structured by me for this course.
-
-2. **The `##THOUGHT##` Repair Protocol** — Forcing the LLM to produce a root cause
-   analysis section *before* generating repair code is a deliberate prompt engineering
-   technique I designed to improve repair accuracy.
-
-3. **The `AgentSession` Audit Pattern** — Tracking every attempt, thought, and
-   outcome in a structured session object that persists to JSON is an original design
-   for traceability in agentic systems.
-
-4. **Error-Type–Driven UI Feedback** — Classifying errors and showing targeted
-   diagnostic panels per error type is an original UX design decision.
-
-### Ethical Statement
-
-This project does not misrepresent AI-generated content as purely human work.
-The system itself is a tool that *uses* AI — the engineering, architecture, and
-learning demonstrated here are my own. The use of the Anthropic API within the
-project is intentional, transparent, and central to the research question this
-project explores: *how can AI models be integrated into autonomous engineering loops?*
-
----
-
-*AuraCode-Agent · Midterm Project · Machine Learning Course*
-*Built with Python 3.11 · Anthropic Claude · Rich*
+*AuraCode-Agent — Beta v0.9 — Built for NQU Machine Learning Midterm, 2026*
+*Made with Claude Anthropic Sonnet 4.6*

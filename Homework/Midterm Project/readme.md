@@ -125,7 +125,7 @@ The project demonstrates a clear **evolutionary improvement pattern** required f
 │  └──────────┘    └──────────────┘    └────┬─────┘  │
 │                                           │        │ 
 │                  ┌──────────────┐         │        │
-│                  │ Robust       │◀────────┘       │
+│                  │ Robust       │◀───────┘         │
 │                  │ Parser       │                  │
 │                  └──────┬───────┘                  │
 │                         │                          │
@@ -205,7 +205,7 @@ The project demonstrates a clear **evolutionary improvement pattern** required f
 │  ║   │ Ollama   │    │ runtime  │    │ STDERR   │                ║  │
 │  ║   └──────────┘    └──────────┘    └────┬─────┘                ║  │
 │  ║                                        │                      ║  │
-│  ║                              ┌─────────▼───────────┐           ║  │
+│  ║                              ┌─────────▼───────────┐          ║  │
 │  ║                              │ Success?            │          ║  │
 │  ║                              │                     │          ║  │
 │  ║                         YES  │  NO: CORRECT        │          ║  │

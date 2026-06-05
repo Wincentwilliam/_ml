@@ -1045,8 +1045,8 @@ def banner(state: AgentState) -> None:
     art = (
         "  ╔═══════════════════════════════════════════════════════╗\n"
         "  ║      AuraCode  ·  V3 PRO  ·  Self-Healing             ║\n"
-        "  ║         [ Auto Language Detection ]                    ║\n"
-        "  ║    Just describe what you want — I'll figure it out!   ║\n"
+        "  ║         [ Auto Language Detection ]                   ║\n"
+        "  ║    Just describe what you want — I'll figure it out!  ║\n"
         "  ╚═══════════════════════════════════════════════════════╝"
     )
     console.print(Panel(

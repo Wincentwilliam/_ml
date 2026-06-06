@@ -1,3 +1,5 @@
+> **This project is made by: ClaudeCode**
+
 # microGPT
 
 A minimal GPT (Generative Pre-trained Transformer) implementation built from scratch using only standard Python libraries.

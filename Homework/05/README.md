@@ -1,3 +1,5 @@
+> **This project is made by: Claude Code**
+
 # v3-agent-secure
 
 Security layer for AI coding agents with file sandboxing, human-in-the-loop approval, and LLM-based security auditing.

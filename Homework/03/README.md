@@ -1,3 +1,5 @@
+> **This project is made by: OpenCode**
+
 # GridPulse Optimizer
 
 A professional-grade neural network training interface for power grid optimization simulation.
@@ -11,9 +13,9 @@ A professional-grade neural network training interface for power grid optimizati
 │  │  GridMap    │  │ TrendMonitor │  │  ControlPanel/Metrics   │ │
 │  │  (Nodes)    │  │ (Loss Chart) │  │  (Toggle/Metrics)       │ │
 │  └─────────────┘  └──────────────┘  └─────────────────────────┘ │
-│                           │                                       │
-│                    SSE Stream                                     │
-└───────────────────────────┼───────────────────────────────────────┘
+│                           │                                     │
+│                    SSE Stream                                   │
+└───────────────────────────┼─────────────────────────────────────┘
                             │
                             ▼
 ┌─────────────────────────────────────────────────────────────────┐
@@ -22,17 +24,17 @@ A professional-grade neural network training interface for power grid optimizati
 │  │  /train/    │  │  /train/     │  │  /train/                │ │
 │  │  start      │  │  stream (SSE)│  │  reset                  │ │
 │  └─────────────┘  └──────────────┘  └─────────────────────────┘ │
-│                           │                                       │
-│                  TrainingRunner                                   │
-│                           │                                       │
-└───────────────────────────┼───────────────────────────────────────┘
+│                           │                                     │
+│                  TrainingRunner                                 │
+│                           │                                     │
+└───────────────────────────┼─────────────────────────────────────┘
                             │
                             ▼
 ┌─────────────────────────────────────────────────────────────────┐
 │                      nn0.py Autograd Engine                     │
 │  ┌─────────────┐  ┌──────────────┐  ┌─────────────────────────┐ │
-│  │  Value      │  │  Linear       │  │  Optimizers             │ │
-│  │  (Autograd) │  │  Layers       │  │  (SGD/Adam/RMSProp)     │ │
+│  │  Value      │  │  Linear      │  │  Optimizers             │ │
+│  │  (Autograd) │  │  Layers      │  │  (SGD/Adam/RMSProp)     │ │
 │  └─────────────┘  └──────────────┘  └─────────────────────────┘ │
 └─────────────────────────────────────────────────────────────────┘
 ```

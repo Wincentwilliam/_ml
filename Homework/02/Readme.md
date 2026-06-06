@@ -1,3 +1,5 @@
+> **This project is made by: OpenCode**
+
 # Backpropagation and Computational Graphs
 
 ## 1. Overview

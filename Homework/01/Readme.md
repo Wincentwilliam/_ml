@@ -1,3 +1,5 @@
+> **This project is made by: OpenCode**
+
 # Traveling Salesperson Problem (TSP) - Hill Climbing Solver
 
 This project implements a **Hill Climbing algorithm** to solve the Traveling Salesperson Problem. The objective is to find the shortest possible route (a Hamiltonian cycle) that visits a set of given cities exactly once.

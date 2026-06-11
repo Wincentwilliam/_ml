@@ -3253,3 +3253,16 @@ openai.InternalServerError: Error code: 500 - {'error': {'message': 'model requi
 [2026-06-05 12:09:50] [DEBUG   ] [openai._base_client] HTTP Response: POST http://localhost:11434/v1/chat/completions "200 OK" Headers({'alt-svc': 'h3=":443"; ma=2592000', 'content-type': 'application/json', 'date': 'Fri, 05 Jun 2026 04:09:50 GMT', 'server': 'Google Frontend', 'set-cookie': 'aid=e1bc5193-ab92-422f-a457-6c0b487e6d30; Path=/; Max-Age=31536000; HttpOnly; Secure; SameSite=Lax', 'traceparent': '00-bf98e6a2068a7f4a2320d767b5d50d7d-7991663b62d411ee-00', 'via': '1.1 google', 'x-build-commit': '32478fbe2b472411c9df342834c11c6c4f0f98d0', 'x-build-time': '2026-06-04T17:52:00-07:00', 'x-cloud-trace-context': 'bf98e6a2068a7f4a2320d767b5d50d7d/8759895155459494382', 'x-frame-options': 'DENY', 'x-request-id': '75910ccc-65e1-4475-aa79-836ab34c29f1', 'transfer-encoding': 'chunked'})
 [2026-06-05 12:09:50] [DEBUG   ] [openai._base_client] request_id: 75910ccc-65e1-4475-aa79-836ab34c29f1
 [2026-06-05 12:09:50] [DEBUG   ] [asyncio] Using proactor: IocpProactor
+[2026-06-10 14:41:36] [DEBUG   ] [asyncio] Using proactor: IocpProactor
+[2026-06-10 14:43:24] [DEBUG   ] [openai._base_client] Request options: {'method': 'post', 'url': '/chat/completions', 'files': None, 'idempotency_key': 'stainless-python-retry-3f21b596-4df7-4f4a-8a02-1700bc1d8e12', 'security': {'bearer_auth': True}, 'content': None, 'json_data': {'messages': [{'role': 'system', 'content': 'You are an expert Rust code generator.\nAlways respond using EXACTLY this structure:\n\n##FILENAME##\n<name_without_extension>\n##DESCRIPTION##\n<one sentence>\n##DEPENDENCIES##\n<pip packages for Python only, or: none>\n##CODE##\n<complete Rust code — no markdown fences>\n##END##\n\nRules:\n- Start with ##FILENAME## immediately — no intro text\n- No ``` fences inside ##CODE##\n- Code must be complete and work as-is\n- Use fn main()\n- ONLY std library, NO extern crates\n- Use println! for output\n'}, {'role': 'user', 'content': 'Create a Rust script/file for:\n\nmake simplle bubble sort using dart'}], 'model': 'qwen3.5:9b', 'temperature': 0.1}}
+[2026-06-10 14:43:24] [DEBUG   ] [openai._base_client] Sending HTTP Request: POST http://localhost:11434/v1/chat/completions
+[2026-06-10 14:43:24] [DEBUG   ] [httpcore.connection] connect_tcp.started host='localhost' port=11434 local_address=None timeout=600 socket_options=None
+[2026-06-10 14:43:24] [DEBUG   ] [httpcore.connection] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x00000231D49374D0>
+[2026-06-10 14:43:24] [DEBUG   ] [httpcore.http11] send_request_headers.started request=<Request [b'POST']>
+[2026-06-10 14:43:24] [DEBUG   ] [httpcore.http11] send_request_headers.complete
+[2026-06-10 14:43:24] [DEBUG   ] [httpcore.http11] send_request_body.started request=<Request [b'POST']>
+[2026-06-10 14:43:24] [DEBUG   ] [httpcore.http11] send_request_body.complete
+[2026-06-10 14:43:24] [DEBUG   ] [httpcore.http11] receive_response_headers.started request=<Request [b'POST']>
+[2026-06-10 14:45:22] [DEBUG   ] [httpcore.http11] receive_response_headers.failed exception=KeyboardInterrupt()
+[2026-06-10 14:45:22] [DEBUG   ] [httpcore.http11] response_closed.started
+[2026-06-10 14:45:22] [DEBUG   ] [httpcore.http11] response_closed.complete

@@ -186,19 +186,19 @@ def ask_language_choice() -> Language:
     """Ask the user to choose a language when task is ambiguous."""
     console.print()
     console.print(Panel(
-        "[yellow]🤔 Hmm, bahasa apa yang mau dipakai?[/yellow]\n\n"
+        "[yellow]🤔 Hmm, what language do you want to use?[/yellow]\n\n"
         + "\n".join(
             f"  [bold]{i}[/bold]. {lang.icon} {lang.name}"
             for i, (key, lang) in enumerate(LANGUAGES.items(), 1)
         ),
-        title="[bold yellow]Pilih Bahasa[/bold yellow]",
+        title="[bold yellow]Select Language[/bold yellow]",
         border_style="yellow",
     ))
     console.print()
 
     while True:
         choice = console.input(
-            "[bold yellow]► Masukkan nomor atau nama bahasa: [/bold yellow]"
+            "[bold yellow]► Enter the number or name of the language: [/bold yellow]"
         ).strip().lower()
 
         if choice.isdigit():
@@ -212,7 +212,7 @@ def ask_language_choice() -> Language:
             if choice in lang.name.lower():
                 return lang
 
-        console.print(f"[red]Tidak valid. Ketik angka 1-{len(LANGUAGES)} atau nama bahasa.[/red]")
+        console.print(f"[red]Invalid. Type the number 1-{len(LANGUAGES)} or language name.[/red]")
 
 
 # ═══════════════════════════════════════════════════════════════════
@@ -1417,7 +1417,7 @@ def run_cli(state: AgentState) -> None:
         if lang_key is None:
             # Ambiguous — ask user
             console.print(Panel(
-                f"[yellow]Hmm, aku tidak yakin bahasa apa yang kamu maksud untuk task ini:[/yellow]\n"
+                f"[yellow]Hmm, I'm not sure what language you mean for this task:[/yellow]\n"
                 f"[bold]'{task[:60]}'[/bold]",
                 border_style="yellow"))
             lang = ask_language_choice()

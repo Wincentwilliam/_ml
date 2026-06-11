@@ -3266,3 +3266,26 @@ openai.InternalServerError: Error code: 500 - {'error': {'message': 'model requi
 [2026-06-10 14:45:22] [DEBUG   ] [httpcore.http11] receive_response_headers.failed exception=KeyboardInterrupt()
 [2026-06-10 14:45:22] [DEBUG   ] [httpcore.http11] response_closed.started
 [2026-06-10 14:45:22] [DEBUG   ] [httpcore.http11] response_closed.complete
+[2026-06-11 10:00:14] [DEBUG   ] [asyncio] Using proactor: IocpProactor
+[2026-06-11 10:00:22] [DEBUG   ] [asyncio] Using proactor: IocpProactor
+[2026-06-11 10:00:34] [INFO    ] [AuraCode.V3Pro] Auto-detected language: rust (keyword: rust)
+[2026-06-11 10:00:35] [DEBUG   ] [openai._base_client] Request options: {'method': 'post', 'url': '/chat/completions', 'files': None, 'idempotency_key': 'stainless-python-retry-1be26b45-b3b5-40e6-b241-a4261a15f53f', 'security': {'bearer_auth': True}, 'content': None, 'json_data': {'messages': [{'role': 'system', 'content': 'You are an expert Rust code generator.\nAlways respond using EXACTLY this structure:\n\n##FILENAME##\n<name_without_extension>\n##DESCRIPTION##\n<one sentence>\n##DEPENDENCIES##\n<pip packages for Python only, or: none>\n##CODE##\n<complete Rust code — no markdown fences>\n##END##\n\nRules:\n- Start with ##FILENAME## immediately — no intro text\n- No ``` fences inside ##CODE##\n- Code must be complete and work as-is\n- Use fn main()\n- ONLY std library, NO extern crates\n- Use println! for output\n'}, {'role': 'user', 'content': 'Create a Rust script/file for:\n\nmake a bubble sort using rust'}], 'model': 'gemma4:31b-cloud', 'temperature': 0.1}}
+[2026-06-11 10:00:35] [DEBUG   ] [openai._base_client] Sending HTTP Request: POST http://localhost:11434/v1/chat/completions
+[2026-06-11 10:00:35] [DEBUG   ] [httpcore.connection] connect_tcp.started host='localhost' port=11434 local_address=None timeout=600 socket_options=None
+[2026-06-11 10:00:35] [DEBUG   ] [httpcore.connection] connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x0000028B96E470E0>
+[2026-06-11 10:00:35] [DEBUG   ] [httpcore.http11] send_request_headers.started request=<Request [b'POST']>
+[2026-06-11 10:00:35] [DEBUG   ] [httpcore.http11] send_request_headers.complete
+[2026-06-11 10:00:35] [DEBUG   ] [httpcore.http11] send_request_body.started request=<Request [b'POST']>
+[2026-06-11 10:00:35] [DEBUG   ] [httpcore.http11] send_request_body.complete
+[2026-06-11 10:00:35] [DEBUG   ] [httpcore.http11] receive_response_headers.started request=<Request [b'POST']>
+[2026-06-11 10:00:39] [DEBUG   ] [httpcore.http11] receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Alt-Svc', b'h3=":443"; ma=2592000'), (b'Content-Type', b'application/json'), (b'Date', b'Thu, 11 Jun 2026 02:00:39 GMT'), (b'Server', b'Google Frontend'), (b'Set-Cookie', b'aid=e2a5b41c-fa67-468e-96fb-fbdb3f30c392; Path=/; Max-Age=31536000; HttpOnly; Secure; SameSite=Lax'), (b'Traceparent', b'00-4d4a4adfb1a00d5bc18818b7751ff541-ec9eceaf97522c16-00'), (b'Via', b'1.1 google'), (b'X-Build-Commit', b'0aec43678ba1a1e18820a7ca25679877fb1f0f1b'), (b'X-Build-Time', b'2026-06-10T17:55:55-07:00'), (b'X-Cloud-Trace-Context', b'4d4a4adfb1a00d5bc18818b7751ff541/17050292492824620054'), (b'X-Frame-Options', b'DENY'), (b'X-Request-Id', b'd914f3b2-fada-4021-b6c6-645c904b5a23'), (b'Transfer-Encoding', b'chunked')])
+[2026-06-11 10:00:39] [INFO    ] [httpx] HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+[2026-06-11 10:00:39] [DEBUG   ] [httpcore.http11] receive_response_body.started request=<Request [b'POST']>
+[2026-06-11 10:00:39] [DEBUG   ] [httpcore.http11] receive_response_body.complete
+[2026-06-11 10:00:39] [DEBUG   ] [httpcore.http11] response_closed.started
+[2026-06-11 10:00:39] [DEBUG   ] [httpcore.http11] response_closed.complete
+[2026-06-11 10:00:39] [DEBUG   ] [openai._base_client] HTTP Response: POST http://localhost:11434/v1/chat/completions "200 OK" Headers({'alt-svc': 'h3=":443"; ma=2592000', 'content-type': 'application/json', 'date': 'Thu, 11 Jun 2026 02:00:39 GMT', 'server': 'Google Frontend', 'set-cookie': 'aid=e2a5b41c-fa67-468e-96fb-fbdb3f30c392; Path=/; Max-Age=31536000; HttpOnly; Secure; SameSite=Lax', 'traceparent': '00-4d4a4adfb1a00d5bc18818b7751ff541-ec9eceaf97522c16-00', 'via': '1.1 google', 'x-build-commit': '0aec43678ba1a1e18820a7ca25679877fb1f0f1b', 'x-build-time': '2026-06-10T17:55:55-07:00', 'x-cloud-trace-context': '4d4a4adfb1a00d5bc18818b7751ff541/17050292492824620054', 'x-frame-options': 'DENY', 'x-request-id': 'd914f3b2-fada-4021-b6c6-645c904b5a23', 'transfer-encoding': 'chunked'})
+[2026-06-11 10:00:39] [DEBUG   ] [openai._base_client] request_id: d914f3b2-fada-4021-b6c6-645c904b5a23
+[2026-06-11 10:00:39] [INFO    ] [AuraCode.V3Pro] Saved: C:\Users\Wincent\Wincent VS Code\_ml\Homework\Midterm Project\AuraCode-Agent\generated_code\v3\rust\bubble_sort.rs
+[2026-06-11 10:00:42] [DEBUG   ] [asyncio] Using proactor: IocpProactor
+[2026-06-11 10:01:07] [DEBUG   ] [asyncio] Using proactor: IocpProactor
